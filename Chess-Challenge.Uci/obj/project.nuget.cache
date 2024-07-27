@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "SKSX6PtVjkyr/wQl7We9AJmax4DLtloavApEv4AW0u4K2Bh2g8Jkv0MBQt2BMS9BmT3cyGaqAY4oZGF9Sealew==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\dragon\\Desktop\\nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dragon\\.nuget\\packages\\raylib-cs\\4.5.0.2\\raylib-cs.4.5.0.2.nupkg.sha512",
+    "C:\\Users\\dragon\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\dragon\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\6.0.24\\microsoft.netcore.app.runtime.win-x64.6.0.24.nupkg.sha512",
+    "C:\\Users\\dragon\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\6.0.24\\microsoft.windowsdesktop.app.runtime.win-x64.6.0.24.nupkg.sha512",
+    "C:\\Users\\dragon\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\6.0.24\\microsoft.aspnetcore.app.runtime.win-x64.6.0.24.nupkg.sha512"
+  ],
+  "logs": []
+}

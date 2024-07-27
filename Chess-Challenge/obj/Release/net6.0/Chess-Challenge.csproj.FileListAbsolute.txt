@@ -1,0 +1,30 @@
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\resources\Fens.txt
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\resources\Pieces.png
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Chess-Challenge.exe
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\src\Evil Bot\EvilBot.cs
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\src\My Bot\MyBot.cs
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\resources\Fonts\OPENSANS-SEMIBOLD.TTF
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\resources\Fonts\sdf.fs
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Chess-Challenge.deps.json
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Chess-Challenge.runtimeconfig.json
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Chess-Challenge.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Chess-Challenge.pdb
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Raylib-cs.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\runtimes\linux-x64\native\libraylib.so
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\runtimes\osx-arm64\native\libraylib.dylib
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\runtimes\osx-x64\native\libraylib.dylib
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\runtimes\win-x64\native\raylib.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\runtimes\win-x86\native\raylib.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\Microsoft.CodeAnalysis.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.csproj.AssemblyReference.cache
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.AssemblyInfoInputs.cache
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.AssemblyInfo.cs
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.csproj.CoreCompileInputs.cache
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.csproj.CopyComplete
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\refint\Chess-Challenge.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.pdb
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\Chess-Challenge.genruntimeconfig.cache
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\ref\Chess-Challenge.dll
