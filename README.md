@@ -10,9 +10,9 @@
 <br>
 <br>
 
-[![License](https://img.shields.io/github/license/Dragjon/Imperious?style=for-the-badge)](https://opensource.org/license/mit)
+[![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
 ![Static Badge](https://img.shields.io/badge/Version-0.0.2-yellow?style=for-the-badge)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/nectar?style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
 
 </div>
 
