@@ -78,7 +78,7 @@ def SCReLU(x):
 ### Training
 The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) which I parsed into 2 csv files for white and black.
 ### Rating Changes
-| Version | SPRT Elo Gaina |
+| Version | SPRT Elo Gains |
 |:-:|:-:|
 | 0.0.2 | 11.5 +/- 9.2 |
 | 0.0.1 | - |
