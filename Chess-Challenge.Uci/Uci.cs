@@ -27,8 +27,8 @@ namespace Chess_Challenge.Cli
 
         private void HandleUci()
         {
-            Console.WriteLine("id name Chess Challenge");
-            Console.WriteLine("id author Sebastian Lague, Gediminas Masaitis");
+            Console.WriteLine("id name Nectar");
+            Console.WriteLine("id author Dragjon");
             Console.WriteLine();
             Console.WriteLine("uciok");
         }

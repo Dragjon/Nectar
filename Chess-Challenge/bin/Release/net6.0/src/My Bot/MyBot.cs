@@ -26,15 +26,15 @@ public class MyBot : IChessBot
 
     public static int SetWeights()
     {
-        byte[] iweightsbytes = File.ReadAllBytes("./iweights.bin");
-        byte[] ibiasesbytes = File.ReadAllBytes("./ibiases.bin");
-        byte[] oweightsbytes = File.ReadAllBytes("./oweights.bin");
-        byte[] obiasesbytes = File.ReadAllBytes("./obias.bin");
+        byte[] iweightsbytes = File.ReadAllBytes("./screlu_iweights.bin");
+        byte[] ibiasesbytes = File.ReadAllBytes("./screlu_ibiases.bin");
+        byte[] oweightsbytes = File.ReadAllBytes("./screlu_oweights.bin");
+        byte[] obiasesbytes = File.ReadAllBytes("./screlu_obias.bin");
 
-        byte[] biweightsbytes = File.ReadAllBytes("./biweights.bin");
-        byte[] bibiasesbytes = File.ReadAllBytes("./bibiases.bin");
-        byte[] boweightsbytes = File.ReadAllBytes("./boweights.bin");
-        byte[] bobiasesbytes = File.ReadAllBytes("./bobias.bin");
+        byte[] biweightsbytes = File.ReadAllBytes("./screlu_biweights.bin");
+        byte[] bibiasesbytes = File.ReadAllBytes("./screlu_bibiases.bin");
+        byte[] boweightsbytes = File.ReadAllBytes("./screlu_boweights.bin");
+        byte[] bobiasesbytes = File.ReadAllBytes("./screlu_bobias.bin");
 
         int row = 0;
         int col = 0;
@@ -147,16 +147,18 @@ public class MyBot : IChessBot
 
     public class NeuralNetwork
     {
-        // ReLU activation function
-        private static float ReLU(float x)
-        {
-            return Math.Max(0, x);
-        }
 
         // Sigmoid activation function
         private static float Sigmoid(float x)
         {
             return 1 / (1 + (float)Math.Exp(-x));
+        }
+
+        // SCReLU activation function
+        private static float SCReLU(float x)
+        {
+            float clipped = Math.Clamp(x, 0, 1);
+            return clipped * clipped;
         }
 
         public static float Predict(float[] inputs, float[,] inputWeights, float[] inputBiases, float[] outputWeights, float outputBias)
@@ -171,7 +173,7 @@ public class MyBot : IChessBot
                 {
                     sum += inputs[i] * inputWeights[i, j];
                 }
-                hiddenLayer[j] = ReLU(sum + inputBiases[j]);
+                hiddenLayer[j] = SCReLU(sum + inputBiases[j]);
             }
 
             // Compute output layer activation
@@ -184,6 +186,7 @@ public class MyBot : IChessBot
 
             return output * scale;
         }
+
     }
 
     public static int Evaluate(Board board)
