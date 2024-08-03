@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using System.IO;
 using ChessChallenge.API;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+using System.Diagnostics;
 
 public class MyBot : IChessBot
 {
@@ -202,12 +200,12 @@ public class MyBot : IChessBot
             prediction = -NeuralNetwork.Predict(encoded, BFeatureWeights, BFeatureBias, BOutputWeights, BOutputBias);
         }
 
-        return (int)prediction;
+        return (int)prediction + tempo;
     }
 
 
     static readonly double ttSlotSizeMB = 0.000024;
-    static int hashSizeMB = 201;
+    public static int hashSizeMB = 201;
     static int hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
 
     // this tuple is 24 bytes
@@ -220,17 +218,88 @@ public class MyBot : IChessBot
     )[] transpositionTable = new (ulong, ushort, int, int, int)[hashSize];
 
     // Variables for search
-    static int rfpMargin = 55;
-    static int futilityMargin = 116;
-    static int mateScore = -20000;
-    static int aspDepth = 3;
-    static int aspDelta = 10;
     static int infinity = 30000;
-    static int hardBoundTimeRatio = 10;
-    static int softBoundTimeRatio = 40;
+    static int mateScore = -20000;
 
+    public static int rfpMargin = 55;
+    public static int rfpDepth = 8;
+    public static int NullMoveR = 4;
+    public static int futilityMargin = 116;
+    public static int futilityDepth = 4;
+    public static int aspDepth = 7;
+    public static int aspDelta = 9;
+    public static int lmrMoveCount = 2;
+    public static int hardBoundTimeRatio = 4;
+    public static int softBoundTimeRatio = 31;
+    public static int iirDepth = 5;
+    public static int tempo = 10;
+    public static int[] deltas = { 174, 401, 450, 548, 1088 };
 
     enum ScoreType { upperbound, lowerbound, none };
+
+    public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta)
+    {
+        hashSizeMB = VHashSizeMB;
+        hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
+        transpositionTable = new (ulong, ushort, int, int, int)[hashSize];
+
+        rfpMargin = VrfpMargin;
+        rfpDepth = VrfpDepth;
+        futilityMargin = VfutilityMargin;
+        futilityDepth = VfutilityDepth;
+        hardBoundTimeRatio = VhardBoundTimeRatio;
+        softBoundTimeRatio = VsoftBoundTimeRatio;
+        aspDepth = VaspDepth;
+        aspDelta = VaspDelta;
+        iirDepth = ViirDepth;
+        tempo = Vtempo;
+        deltas[0] = VpawnDelta;
+        deltas[1] = VknightDelta;
+        deltas[2] = VbishopDelta;
+        deltas[3] = VrookDelta;
+        deltas[4] = VqueenDelta;
+        NullMoveR = VnullMoveR;
+        lmrMoveCount = VlmrMoveCount;
+
+    }
+
+    public static ulong perftD(Board board, int depth)
+    {
+
+        ulong nodes = 0;
+
+        if (depth == 0)
+            return 1;
+
+        Move[] legals = board.GetLegalMoves();
+        foreach (var move in legals)
+        {
+            board.MakeMove(move);
+            nodes += perftD(board, depth - 1);
+            board.UndoMove(move);
+
+        }
+
+        return nodes;
+    }
+
+    public static void perft(Board board, int maxDepth)
+    {
+        ulong nodes;
+        Console.WriteLine($"Initiating a perft test for fen {board.GetFenString()}");
+
+        for (int depth = 1; depth <= maxDepth; depth++)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            nodes = perftD(board, depth);
+            stopwatch.Stop();
+
+            double seconds = stopwatch.Elapsed.TotalSeconds;
+            double nodesPerSecond = nodes / seconds;
+
+            Console.WriteLine($"info string perft depth {depth} nodes {nodes} time {(ulong)(seconds * 1000)} nps {(ulong)nodesPerSecond}");
+        }
+    }
 
     public Move Think(Board board, Timer timer)
     {
@@ -339,8 +408,11 @@ public class MyBot : IChessBot
             foreach (Move move in board.GetLegalMoves(true).OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
                                           : 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType))
             {
-                if (standPat + (0b1_0100110100_1011001110_0110111010_0110000110_0010110100_0000000000 >> (int)move.CapturePieceType * 10 & 0b1_11111_11111) <= alpha)
+                if (standPat + deltas[(int)move.CapturePieceType - 1] < alpha)
+                {
                     break;
+                }
+
                 nodes++;
                 board.MakeMove(move);
                 score = -qSearch(-beta, -alpha, ply + 1);
@@ -427,7 +499,7 @@ public class MyBot : IChessBot
                 })
                     return score;
             }
-            else if (nonPv && depth > 3)
+            else if (nonPv && depth > iirDepth)
                 // Internal iterative reduction
                 depth--;
 
@@ -442,16 +514,13 @@ public class MyBot : IChessBot
             int killerIndex = ply & 4095;
 
             // Reverse futility pruning
-            if (nonPv && eval - rfpMargin * depth >= beta && !board.IsInCheck()) return eval;
+            if (nonPv && depth <= rfpDepth && eval - rfpMargin * depth >= beta && !board.IsInCheck()) return eval;
 
             // Null move pruning
             if (nonPv && eval >= beta && board.TrySkipTurn())
             {
-                eval = -search(depth - 4, ply + 1, 1 - beta, -beta);
+                eval = -search(depth - NullMoveR, ply + 1, 1 - beta, -beta);
                 board.UndoSkipTurn();
-
-
-                // IMPROVEMENT : RETURN BETA INSTEAD OF SCORE
 
                 if (eval >= beta) return eval;
             }
@@ -469,11 +538,12 @@ public class MyBot : IChessBot
                                           : move == killers[killerIndex] ? 500_000_000_000_000_000
                                           : history[move.RawValue & 4095]))
             {
+
                 moveCount++;
 
                 nodes++;
 
-                int reduction = moveCount > 3 && nonPv && !move.IsCapture ? 1 : 0;
+                int reduction = moveCount > lmrMoveCount && nonPv && !move.IsCapture ? 1 : 0;
 
                 board.MakeMove(move);
 
@@ -529,12 +599,8 @@ public class MyBot : IChessBot
                         break;
                     }
                 }
-
-
-                // Extended futility pruning
-                if (nonPv && depth <= 4 && !move.IsCapture && (eval + futilityMargin * depth * depth < alpha) && bestScore > mateScore + 100)
+                if (nonPv && depth <= futilityDepth && !move.IsCapture && (eval + futilityMargin * depth * depth < alpha) && bestScore > mateScore + 100)
                     break;
-
             }
 
             tt = (
