@@ -17,22 +17,12 @@ public class MyBot : IChessBot
     static float[] OutputWeights = new float[hiddenLayerSize];
     static float OutputBias;
 
-    static float[,] BFeatureWeights = new float[inputLayerSize, hiddenLayerSize];
-    static float[] BFeatureBias = new float[hiddenLayerSize];
-    static float[] BOutputWeights = new float[hiddenLayerSize];
-    static float BOutputBias;
-
     public static int SetWeights()
     {
         byte[] iweightsbytes = File.ReadAllBytes("./screlu_iweights.bin");
         byte[] ibiasesbytes = File.ReadAllBytes("./screlu_ibiases.bin");
         byte[] oweightsbytes = File.ReadAllBytes("./screlu_oweights.bin");
         byte[] obiasesbytes = File.ReadAllBytes("./screlu_obias.bin");
-
-        byte[] biweightsbytes = File.ReadAllBytes("./screlu_biweights.bin");
-        byte[] bibiasesbytes = File.ReadAllBytes("./screlu_bibiases.bin");
-        byte[] boweightsbytes = File.ReadAllBytes("./screlu_boweights.bin");
-        byte[] bobiasesbytes = File.ReadAllBytes("./screlu_bobias.bin");
 
         int row = 0;
         int col = 0;
@@ -41,9 +31,7 @@ public class MyBot : IChessBot
         for (int i = 0; i < inputLayerSize * hiddenLayerSize * 4; i += 4)
         {
             byte[] tmp1 = new byte[] { iweightsbytes[i], iweightsbytes[i + 1], iweightsbytes[i + 2], iweightsbytes[i + 3] };
-            byte[] btmp1 = new byte[] { biweightsbytes[i], biweightsbytes[i + 1], biweightsbytes[i + 2], biweightsbytes[i + 3] };
             FeatureWeights[row, col] = BitConverter.ToSingle(tmp1, 0);
-            BFeatureWeights[row, col] = BitConverter.ToSingle(btmp1, 0);
 
             col++;
             if (col == hiddenLayerSize)
@@ -58,9 +46,7 @@ public class MyBot : IChessBot
         for (int i = 0; i < hiddenLayerSize * 4; i += 4)
         {
             byte[] tmp2 = new byte[] { ibiasesbytes[i], ibiasesbytes[i + 1], ibiasesbytes[i + 2], ibiasesbytes[i + 3] };
-            byte[] btmp2 = new byte[] { bibiasesbytes[i], bibiasesbytes[i + 1], bibiasesbytes[i + 2], bibiasesbytes[i + 3] };
             FeatureBias[col] = BitConverter.ToSingle(tmp2, 0);
-            BFeatureBias[col] = BitConverter.ToSingle(btmp2, 0);
             col++;
         }
 
@@ -69,17 +55,13 @@ public class MyBot : IChessBot
         for (int i = 0; i < hiddenLayerSize * 4; i += 4)
         {
             byte[] tmp3 = new byte[] { oweightsbytes[i], oweightsbytes[i + 1], oweightsbytes[i + 2], oweightsbytes[i + 3] };
-            byte[] btmp3 = new byte[] { boweightsbytes[i], boweightsbytes[i + 1], boweightsbytes[i + 2], boweightsbytes[i + 3] };
             OutputWeights[col] = BitConverter.ToSingle(tmp3, 0);
-            BOutputWeights[col] = BitConverter.ToSingle(btmp3, 0);
             col++;
         }
 
         // Output bias
         byte[] tmp4 = new byte[] { obiasesbytes[0], obiasesbytes[1], obiasesbytes[2], obiasesbytes[3] };
-        byte[] btmp4 = new byte[] { bobiasesbytes[0], bobiasesbytes[1], bobiasesbytes[2], bobiasesbytes[3] };
         OutputBias = BitConverter.ToSingle(tmp4, 0);
-        BOutputBias = BitConverter.ToSingle(btmp4, 0);
 
         return 0;
     }
@@ -104,6 +86,7 @@ public class MyBot : IChessBot
         // Split the FEN string to get the board layout
         string[] parts = fen.Split(' ');
         string board = parts[0];
+        string turn = parts[1];
 
         // Split the board part into rows
         string[] rows = board.Split('/');
@@ -125,15 +108,31 @@ public class MyBot : IChessBot
                     // Piece, determine its position in the 384-element array
                     int pieceIndex = PieceToIndex[character];
                     int boardPosition = rowIdx * 8 + colIdx;
-                    if (char.IsUpper(character))
+                    if (turn == "w")
                     {
-                        // White piece
-                        boardArray[pieceIndex + boardPosition] = 1;
+                        if (char.IsUpper(character))
+                        {
+                            // White piece
+                            boardArray[pieceIndex + boardPosition] = 1;
+                        }
+                        else
+                        {
+                            // Black piece
+                            boardArray[pieceIndex + boardPosition] = -1;
+                        }
                     }
                     else
                     {
-                        // Black piece
-                        boardArray[pieceIndex + boardPosition] = -1;
+                        if (char.IsUpper(character))
+                        {
+                            // White piece
+                            boardArray[pieceIndex + boardPosition ^ 56] = -1;
+                        }
+                        else
+                        {
+                            // Black piece
+                            boardArray[pieceIndex + boardPosition ^ 56] = 1;
+                        }
                     }
                     colIdx++;
                 }
@@ -142,7 +141,6 @@ public class MyBot : IChessBot
 
         return boardArray;
     }
-
     public class NeuralNetwork
     {
 
@@ -191,15 +189,8 @@ public class MyBot : IChessBot
     {
         float[] encoded = Encode(board.GetFenString());
         float prediction = 0;
-        if (board.IsWhiteToMove)
-        {
-            prediction = NeuralNetwork.Predict(encoded, FeatureWeights, FeatureBias, OutputWeights, OutputBias);
-        }
-        else
-        {
-            prediction = -NeuralNetwork.Predict(encoded, BFeatureWeights, BFeatureBias, BOutputWeights, BOutputBias);
-        }
-
+        prediction = NeuralNetwork.Predict(encoded, FeatureWeights, FeatureBias, OutputWeights, OutputBias);
+        
         return (int)prediction + tempo;
     }
 
@@ -224,7 +215,7 @@ public class MyBot : IChessBot
     public static int rfpMargin = 55;
     public static int rfpDepth = 8;
     public static int NullMoveR = 4;
-    public static int futilityMargin = 116;
+    public static int futilityMargin = 128;
     public static int futilityDepth = 4;
     public static int aspDepth = 7;
     public static int aspDelta = 9;
@@ -599,7 +590,7 @@ public class MyBot : IChessBot
                         break;
                     }
                 }
-                if (nonPv && depth <= futilityDepth && !move.IsCapture && (eval + futilityMargin * depth * depth < alpha) && bestScore > mateScore + 100)
+                if (nonPv && depth <= futilityDepth && !move.IsCapture && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
                     break;
             }
 
@@ -622,7 +613,6 @@ public class MyBot : IChessBot
 
         try
         {
-
             nodes = 0;
             int score = 0;
             // Soft time limit
