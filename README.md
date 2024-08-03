@@ -83,6 +83,18 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 | 0.0.3 | 57.0 +/- 26.3 |
 | 0.0.2 | 11.5 +/- 9.2 |
 | 0.0.1 | - |
+### Rating
+```
+Rank Name                          Elo     +/-   Games   Score    Draw
+   1 snowy-v0.2                    203      65     150   76.3%    4.7%
+   2 CDrill_1800_Build_4           170      60     150   72.7%    8.0%
+   3 Napolean-v1.4.0               139      58     150   69.0%    7.3%
+   4 shallowblue-v2.0.0            -56      55     150   42.0%    6.7%
+   5 NectarV0.0.2                 -241      66     150   20.0%    9.3%
+   6 NectarV0.0.3                 -241      67     150   20.0%    6.7%
+
+Approx: 1432 - 1781
+```
 ### Future plans
 - Change input layer to 728 instead of 384
 - Do perspective networks
