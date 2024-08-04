@@ -66,6 +66,7 @@ namespace Chess_Challenge.Cli
             Console.WriteLine("id name Nectar");
             Console.WriteLine("id author Dragjon");
             Console.WriteLine($"option name Hash type spin default {_hashSizeMB} min 1 max 1024");
+            Console.WriteLine($"option name Threads type spin default 1 min 1 max 1");
             Console.WriteLine($"option name rfpMargin type spin default {_rfpMargin} min 0 max 200");
             Console.WriteLine($"option name rfpDepth type spin default {_rfpDepth} min 0 max 15");
             Console.WriteLine($"option name futilityMargin type spin default {_futilityMargin} min 0 max 400");
@@ -245,6 +246,10 @@ namespace Chess_Challenge.Cli
                     _nullMoveR = nmr;
                     Console.WriteLine($"info string nullMoveR set to {_nullMoveR}");
                 }
+            }
+            else if (optionName == "name" && words[2] == "Threads" && words[3] == "value")
+            {
+                Console.WriteLine($"info string Threads set to 1");
             }
 
             MyBot.setMargins(_hashSizeMB, _rfpMargin, _rfpDepth, _futilityMargin, _futilityDepth, _hardBoundTimeRatio, _softBoundTimeRatio, _aspDepth, _aspDelta, _nullMoveR, _lmrMoveCount, _iirDepth, _tempo, _pawnDelta, _knightDelta, _bishopDelta, _rookDelta, _queenDelta);
