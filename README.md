@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.0.3-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.0.4-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
 
 </div>
@@ -19,9 +19,9 @@
 ## Overview
 My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me!
 ### Encoding Positions
-The chess positions are encoded into a 384-element array like this
+The chess positions are encoded into a 384-element array like this, if its black to move (nstm) we flip the positions and sides
 ```python
-def encode_fen_to_384(fen):
+def encode_fen_to_384(fen, turn):
     # Define the index mapping for each piece type in the 384-element array
     piece_to_index = {
         'P': 0,  'p': 0,  # Pawns
@@ -51,18 +51,30 @@ def encode_fen_to_384(fen):
                 # Piece, determine its position in the 384-element array
                 piece_index = piece_to_index[char]
                 board_position = row_idx * 8 + col_idx
-                if char.isupper():
-                    # White piece
-                    board_array[piece_index + board_position] = 1
+
+                if turn == 0:
+                    # stm
+                    if char.isupper():
+                        # White piece
+                        board_array[piece_index + board_position] = 1
+                    else:
+                        # Black piece
+                        board_array[piece_index + board_position] = -1
+                    col_idx += 1
                 else:
-                    # Black piece
-                    board_array[piece_index + board_position] = -1
-                col_idx += 1
+                    # nstm
+                    if char.isupper():
+                        # White piece
+                        board_array[piece_index + board_position ^ 56] = -1
+                    else:
+                        # Black piece
+                        board_array[piece_index + board_position ^ 56] = 1
+                    col_idx += 1
     
     return board_array
 ```
 ### Architechture
-I trained 2 networks for evaluating each color, white and black. The architechture is 384x32x1 where the inputs are encoded board positions
+I trained 1 neural network for predicting WDL instead of 2 to train more data, as I could've just flipped the colors and positions of nstm. The architechture is 384x32x1 where the inputs are encoded board positions
 ```python
 model = Sequential([
     Dense(32, input_shape=(input_shape,)),
@@ -78,11 +90,12 @@ def SCReLU(x):
 ### Training
 The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) which I parsed into 2 csv files for white and black.
 ### Rating Changes
-| Version | SPRT Elo Gains |
-|:-:|:-:|
-| 0.0.3 | 57.0 +/- 26.3 |
-| 0.0.2 | 11.5 +/- 9.2 |
-| 0.0.1 | - |
+| Version | SPRT Elo Gains | Main Changes|
+|:-:|:-:|:-:|
+| 0.0.4 | 10.6 +/- 8.5 | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) |
+| 0.0.3 | 57.0 +/- 26.3 | Tuned with weather factory, Changed some implementations |
+| 0.0.2 | 11.5 +/- 9.2 | SCReLU nets |
+| 0.0.1 | - | Initial Release |
 ### Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
