@@ -90,12 +90,12 @@ def SCReLU(x):
 ### Training
 The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) which I parsed into 2 csv files for white and black.
 ### Rating Changes
-| Version | SPRT Elo Gains |
-|:-:|:-:|
-| 0.0.4 | 10.6 +/- 8.5 |
-| 0.0.3 | 57.0 +/- 26.3 |
-| 0.0.2 | 11.5 +/- 9.2 |
-| 0.0.1 | - |
+| Version | SPRT Elo Gains | Main Changes|
+|:-:|:-:|:-:|
+| 0.0.4 | 10.6 +/- 8.5 | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) |
+| 0.0.3 | 57.0 +/- 26.3 | Tuned with weather factory, Changed some implementations |
+| 0.0.2 | 11.5 +/- 9.2 | SCReLU nets |
+| 0.0.1 | - | Initial Release |
 ### Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
