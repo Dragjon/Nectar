@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.0.5-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.0.6-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
 
 </div>
@@ -92,6 +92,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.0.6 | 36.6 +/- 20.3 | Hand tuned search parameters
 | 0.0.5 | 35.1 +/- 19.8 | 2x More data + Trained with AdamW optimiser
 | 0.0.4 | 10.6 +/- 8.5 | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) |
 | 0.0.3 | 57.0 +/- 26.3 | Tuned with weather factory, Changed some implementations |
@@ -108,6 +109,11 @@ Rank Name                          Elo     +/-   Games   Score    Draw
 
 Approx: 1560 - 1722
 ```
+### Credits
+- Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
+- mid_88 [Spaghet] (Explaining how to load binary weights)
+- Matt [Heimdall] (Nicely documented code, based some params on it)
+- And several more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
 ### Future plans
 - Change input layer to 728 instead of 384
 - Do perspective networks
