@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.0.4-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.0.5-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
 
 </div>
@@ -92,6 +92,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.0.5 | 35.1 +/- 19.8 | 2x More data + Trained with AdamW optimiser
 | 0.0.4 | 10.6 +/- 8.5 | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) |
 | 0.0.3 | 57.0 +/- 26.3 | Tuned with weather factory, Changed some implementations |
 | 0.0.2 | 11.5 +/- 9.2 | SCReLU nets |
@@ -99,14 +100,13 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
-   1 snowy-v0.2                    203      65     150   76.3%    4.7%
-   2 CDrill_1800_Build_4           170      60     150   72.7%    8.0%
-   3 Napolean-v1.4.0               139      58     150   69.0%    7.3%
-   4 shallowblue-v2.0.0            -56      55     150   42.0%    6.7%
-   5 NectarV0.0.2                 -241      66     150   20.0%    9.3%
-   6 NectarV0.0.3                 -241      67     150   20.0%    6.7%
+   1 snowy-v0.2                    191     103      64   75.0%    0.0%
+   2 CDrill_1800_Build_4           138      93      61   68.9%    6.6%
+   3 Napolean-v1.4.0                81      91      61   61.5%    1.6%
+   4 shallowblue-v2.0.0           -191     101      62   25.0%    4.8%
+   5 NectarV0.0.5                 -248     111      62   19.4%    6.5%
 
-Approx: 1432 - 1781
+Approx: 1560 - 1722
 ```
 ### Future plans
 - Change input layer to 728 instead of 384
