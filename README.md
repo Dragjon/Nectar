@@ -88,7 +88,7 @@ def SCReLU(x):
     return tf.square(tf.clip_by_value(x, 0, 1))
 ```
 ### Training
-The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) which I parsed into 2 csv files for white and black.
+The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
@@ -112,6 +112,7 @@ Approx: 1560 - 1722
 ### Credits
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
+- cj5716 [Alexandria] (Parsing the stash data)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
 - And several more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
 ### Future plans
