@@ -213,18 +213,18 @@ public class MyBot : IChessBot
     static int mateScore = -20000;
 
     public static int rfpMargin = 55;
-    public static int rfpDepth = 8;
+    public static int rfpDepth = 9;
     public static int NullMoveR = 4;
-    public static int futilityMargin = 128;
+    public static int futilityMargin = 250;
     public static int futilityDepth = 4;
-    public static int aspDepth = 7;
-    public static int aspDelta = 9;
-    public static int lmrMoveCount = 2;
-    public static int hardBoundTimeRatio = 4;
-    public static int softBoundTimeRatio = 31;
-    public static int iirDepth = 5;
-    public static int tempo = 10;
-    public static int[] deltas = { 174, 401, 450, 548, 1088 };
+    public static int aspDepth = 3;
+    public static int aspDelta = 35;
+    public static int lmrMoveCount = 3;
+    public static int hardBoundTimeRatio = 1;
+    public static int softBoundTimeRatio = 20;
+    public static int iirDepth = 3;
+    public static int tempo = 14;
+    public static int[] deltas = { 200, 500, 600, 1000, 2000 };
 
     enum ScoreType { upperbound, lowerbound, none };
 
@@ -380,7 +380,6 @@ public class MyBot : IChessBot
                 {
                     2147483647 /* BOUND_LOWER */ => score >= beta,
                     0 /* BOUND_UPPER */ => score <= alpha,
-                    // exact cutoffs at pv nodes causes problems, but need it in qsearch for matefinding
                     _ /* BOUND_EXACT */ => true,
                 })
                     return score;
@@ -483,14 +482,13 @@ public class MyBot : IChessBot
             {
                 if (ttDepth >= depth && ttBound switch
                 {
-                    2147483647 /* BOUND_LOWER */ => score >= beta,
-                    0 /* BOUND_UPPER */ => score <= alpha,
-                    // exact cutoffs at pv nodes causes problems, but need it in qsearch for matefinding
-                    _ /* BOUND_EXACT */ => true,
+                    2147483647 => score >= beta,
+                    0 => score <= alpha,
+                    _ => true,
                 })
                     return score;
             }
-            else if (nonPv && depth > iirDepth)
+            else if (!nonPv && depth > iirDepth)
                 // Internal iterative reduction
                 depth--;
 
@@ -529,6 +527,8 @@ public class MyBot : IChessBot
                                           : move == killers[killerIndex] ? 500_000_000_000_000_000
                                           : history[move.RawValue & 4095]))
             {
+                if (nonPv && depth <= futilityDepth && !move.IsCapture && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
+                    continue;
 
                 moveCount++;
 
@@ -545,7 +545,7 @@ public class MyBot : IChessBot
 
 
                 // Principle variation search
-                if (moveCount == 1)
+                if (moveCount == 1 && !nonPv)
                 {
                     score = -search(depth - 1 + moveExtension, ply + 1, -beta, -alpha);
                 }
@@ -590,8 +590,6 @@ public class MyBot : IChessBot
                         break;
                     }
                 }
-                if (nonPv && depth <= futilityDepth && !move.IsCapture && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
-                    break;
             }
 
             tt = (
