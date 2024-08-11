@@ -4,6 +4,7 @@ using System.IO;
 using ChessChallenge.API;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 public class MyBot : IChessBot
 {
@@ -212,7 +213,7 @@ public class MyBot : IChessBot
     static int infinity = 30000;
     static int mateScore = -20000;
 
-    public static int rfpMargin = 55;
+    public static int rfpMargin = 85;
     public static int rfpDepth = 9;
     public static int NullMoveR = 4;
     public static int futilityMargin = 250;
@@ -223,6 +224,10 @@ public class MyBot : IChessBot
     public static int hardBoundTimeRatio = 1;
     public static int softBoundTimeRatio = 20;
     public static int iirDepth = 3;
+    public static int lmrCount = 5;
+    public static int lmrDepth = 2;
+    public static double lmrBase = 0.75D;
+    public static double lmrMul = 0.4D;
     public static int tempo = 14;
     public static int[] deltas = { 200, 500, 600, 1000, 2000 };
 
@@ -376,12 +381,13 @@ public class MyBot : IChessBot
 
             if (ttHit)
             {
-                if (ttBound switch
-                {
-                    2147483647 /* BOUND_LOWER */ => score >= beta,
-                    0 /* BOUND_UPPER */ => score <= alpha,
-                    _ /* BOUND_EXACT */ => true,
-                })
+                if (ttBound == 0)
+                    if (score >= beta)
+                        return score;
+                else if (ttBound == 1)
+                    if (score <= alpha)
+                        return score;
+                else
                     return score;
             }
 
@@ -424,17 +430,12 @@ public class MyBot : IChessBot
             }
 
             tt = (
-            board.ZobristKey,
-                    alpha > oldAlpha // don't update best move if upper bound
-                    ? bestMove.RawValue
-                    : ttMoveRaw,
+                    board.ZobristKey,
+                    alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
                     Math.Clamp(bestScore, -20000, 20000),
                     0,
-                    bestScore >= beta
-                    ? 2147483647 /* BOUND_LOWER */
-                    : alpha - oldAlpha /* BOUND_UPPER if alpha == oldAlpha else BOUND_EXACT */
+                    bestScore >= beta ? 0 /* lowerbound */ : alpha == oldAlpha ? 1 /* upperbound */ : 2 /* Exact */
             );
-
             return bestScore;
         }
 
@@ -480,13 +481,17 @@ public class MyBot : IChessBot
 
             if (nonPv && ttHit)
             {
-                if (ttDepth >= depth && ttBound switch
+                if (ttDepth >= depth)
                 {
-                    2147483647 => score >= beta,
-                    0 => score <= alpha,
-                    _ => true,
-                })
-                    return score;
+                    if (ttBound == 0)
+                        if (score >= beta) 
+                            return score;
+                    else if (ttBound == 1)
+                        if (score <= alpha)
+                            return score;
+                    else
+                        return score;
+                }
             }
             else if (!nonPv && depth > iirDepth)
                 // Internal iterative reduction
@@ -502,13 +507,15 @@ public class MyBot : IChessBot
             // Index for killers
             int killerIndex = ply & 4095;
 
+            bool nodeIsCheck = board.IsInCheck();
             // Reverse futility pruning
-            if (nonPv && depth <= rfpDepth && eval - rfpMargin * depth >= beta && !board.IsInCheck()) return eval;
+            if (nonPv && depth <= rfpDepth && eval - rfpMargin * depth >= beta && !nodeIsCheck) return eval;
 
             // Null move pruning
-            if (nonPv && eval >= beta && board.TrySkipTurn())
+            if (nonPv && eval >= beta && !nodeIsCheck)
             {
-                eval = -search(depth - NullMoveR, ply + 1, 1 - beta, -beta);
+                board.ForceSkipTurn();
+                eval = -search(depth - NullMoveR, ply + 1, -beta + 1, -beta);
                 board.UndoSkipTurn();
 
                 if (eval >= beta) return eval;
@@ -531,10 +538,9 @@ public class MyBot : IChessBot
                     continue;
 
                 moveCount++;
-
                 nodes++;
 
-                int reduction = moveCount > lmrMoveCount && nonPv && !move.IsCapture ? 1 : 0;
+                int reduction = moveCount > lmrCount && depth >= lmrDepth && !move.IsCapture && !nodeIsCheck && nonPv ? (int)(lmrBase + Math.Log(depth) * Math.Log(moveCount) * lmrMul) : 0;
 
                 board.MakeMove(move);
 
@@ -594,14 +600,10 @@ public class MyBot : IChessBot
 
             tt = (
                     board.ZobristKey,
-                    alpha > oldAlpha // don't update best move if upper bound
-                    ? bestMove.RawValue
-                    : ttMoveRaw,
+                    alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
                     Math.Clamp(bestScore, -20000, 20000),
                     depth,
-                    bestScore >= beta
-                    ? 2147483647 /* BOUND_LOWER */
-                    : alpha - oldAlpha /* BOUND_UPPER if alpha == oldAlpha else BOUND_EXACT */
+                    bestScore >= beta ? 0 /* lowerbound */ : alpha == oldAlpha ? 1 /* upperbound */ : 2 /* Exact */
             );
 
             return bestScore;
@@ -633,19 +635,19 @@ public class MyBot : IChessBot
                     if (newScore <= alpha)
                     {
                         beta = (newScore + beta) / 2;
-                        alpha = Math.Max(newScore - delta, -infinity);
+                        alpha = newScore - delta;
 
                         printInfo(alpha, ScoreType.upperbound);
                     }
                     else if (newScore >= beta)
                     {
-                        beta = Math.Min(newScore + delta, infinity);
+                        beta = newScore + delta;
 
                         printInfo(beta, ScoreType.lowerbound);
                     }
                     else
                         break;
-                    if (delta <= 500)
+                    if (delta <= 500 && timer.MillisecondsElapsedThisTurn < timer.MillisecondsRemaining / softBoundTimeRatio)
                         delta += delta;
                     else
                         delta = infinity;
