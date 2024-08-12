@@ -12,12 +12,20 @@
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
 ![Static Badge](https://img.shields.io/badge/Version-0.1.1-yellow?style=for-the-badge)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
-
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
+[![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
+[![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
+[![Lichess bullet rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=bullet)](https://lichess.org/@/Tokenstealer/perf/bullet)
 </div>
 
 ## Overview
 My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me!
+## Playing
+### Locally
+You can download the precompiled executables for windows [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
+### Online
+You can play the latest release of Nectar online at lichess [here](https://lichess.org/@/NectarBOT). Note that it will not always be online.
+## Neural Network
 ### Encoding Positions
 The chess positions are encoded into a 384-element array like this, if its black to move (nstm) we flip the positions and sides
 ```python
@@ -103,7 +111,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 | 0.0.3 | 57.0 +/- 26.3 | Tuned with weather factory, Changed some implementations |
 | 0.0.2 | 11.5 +/- 9.2 | SCReLU nets |
 | 0.0.1 | - | Initial Release |
-### Rating
+## Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
    1 snowy-v0.2                    270     154      43   82.6%    2.3%
@@ -114,14 +122,14 @@ Rank Name                          Elo     +/-   Games   Score    Draw
 
 Approx: 1595 - 1848
 ```
-### Credits
+## Credits
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
 - Gediminas (For the UCI interface for Sebastian Lagues's framework)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
 - And a lot more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
-### Future plans
+## Future plans
 - Change input layer to 728 instead of 384
 - Do perspective networks
 - Do the UE of NNUE
