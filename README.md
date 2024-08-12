@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.0.9-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.0-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
 
 </div>
@@ -92,6 +92,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
 | 0.0.9 | 85.5 +/- 33.0 | Changed scale factor
 | 0.0.8 | 29.7 +/- 18.0 | No reset killers + History Gravity 
 | 0.0.7 | 27.6 +/- 17.2 | LMR Log Formula
@@ -104,18 +105,19 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
-   1 snowy-v0.2                    191     103      64   75.0%    0.0%
-   2 CDrill_1800_Build_4           138      93      61   68.9%    6.6%
-   3 Napolean-v1.4.0                81      91      61   61.5%    1.6%
-   4 shallowblue-v2.0.0           -191     101      62   25.0%    4.8%
-   5 NectarV0.0.5                 -248     111      62   19.4%    6.5%
+   1 snowy-v0.2                    270     154      43   82.6%    2.3%
+   2 CDrill_1800_Build_4           132     105      44   68.2%   13.6%
+   3 Napolean-v1.4.0                 0     100      43   50.0%   11.6%
+   4 shallowblue-v2.0.0           -180     123      44   26.1%    2.3%
+   5 NectarV0.1.0                 -202     118      44   23.9%   11.4%
 
-Approx: 1560 - 1722
+Approx: 1595 - 1848
 ```
 ### Credits
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
+- Gediminas (For the UCI interface for Sebastian Lagues's framework)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
 - And several more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
 ### Future plans
