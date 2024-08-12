@@ -358,7 +358,7 @@ namespace Chess_Challenge.Cli
 
         private void HandleGo(IReadOnlyList<string> words)
         {
-            var ms = int.MaxValue;
+            var ms = 30000;
 
             for (var wordIndex = 0; wordIndex < words.Count; wordIndex++)
             {

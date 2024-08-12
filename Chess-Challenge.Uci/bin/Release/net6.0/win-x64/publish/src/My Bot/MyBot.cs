@@ -4,7 +4,6 @@ using System.IO;
 using ChessChallenge.API;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Xml.Linq;
 
 public class MyBot : IChessBot
 {
@@ -69,74 +68,54 @@ public class MyBot : IChessBot
 
     int initialise = SetWeights();
 
-    private static readonly Dictionary<char, int> PieceToIndex = new Dictionary<char, int>
-    {
-        {'P', 0}, {'p', 0},  // Pawns
-        {'N', 64}, {'n', 64}, // Knights
-        {'B', 128}, {'b', 128}, // Bishops
-        {'R', 192}, {'r', 192}, // Rooks
-        {'Q', 256}, {'q', 256}, // Queens
-        {'K', 320}, {'k', 320}  // Kings
-    };
-
     public static float[] Encode(string fen)
     {
-        // Initialize the 384-element array
         float[] boardArray = new float[384];
+        ReadOnlySpan<char> span = fen.AsSpan();
+        int spaceIndex = span.IndexOf(' ');
+        ReadOnlySpan<char> boardSpan = span.Slice(0, spaceIndex);
+        char turn = span[spaceIndex + 1];
+        ReadOnlySpan<char> rows = boardSpan;
 
-        // Split the FEN string to get the board layout
-        string[] parts = fen.Split(' ');
-        string board = parts[0];
-        string turn = parts[1];
+        int rowIdx = 0;
+        int colIdx = 0;
 
-        // Split the board part into rows
-        string[] rows = board.Split('/');
-
-        for (int rowIdx = 0; rowIdx < rows.Length; rowIdx++)
+        foreach (var character in rows)
         {
-            string row = rows[rowIdx];
-            int colIdx = 0;
-
-            foreach (char character in row)
+            if (character == '/')
             {
-                if (char.IsDigit(character))
+                rowIdx++;
+                colIdx = 0;
+            }
+            else if (char.IsDigit(character))
+            {
+                colIdx += character - '0';
+            }
+            else
+            {
+                int pieceIndex = character switch
                 {
-                    // Empty squares, advance the column index
-                    colIdx += int.Parse(character.ToString());
+                    'P' or 'p' => 0,
+                    'N' or 'n' => 64,
+                    'B' or 'b' => 128,
+                    'R' or 'r' => 192,
+                    'Q' or 'q' => 256,
+                    'K' or 'k' => 320,
+                    _ => throw new InvalidOperationException("Invalid piece character")
+                };
+
+                int boardPosition = rowIdx * 8 + colIdx;
+                int arrayIndex = turn == 'w' ? boardPosition : boardPosition ^ 56;
+
+                if (char.IsUpper(character))
+                {
+                    boardArray[pieceIndex + arrayIndex] = turn == 'w' ? 1 : -1;
                 }
                 else
                 {
-                    // Piece, determine its position in the 384-element array
-                    int pieceIndex = PieceToIndex[character];
-                    int boardPosition = rowIdx * 8 + colIdx;
-                    if (turn == "w")
-                    {
-                        if (char.IsUpper(character))
-                        {
-                            // White piece
-                            boardArray[pieceIndex + boardPosition] = 1;
-                        }
-                        else
-                        {
-                            // Black piece
-                            boardArray[pieceIndex + boardPosition] = -1;
-                        }
-                    }
-                    else
-                    {
-                        if (char.IsUpper(character))
-                        {
-                            // White piece
-                            boardArray[pieceIndex + boardPosition ^ 56] = -1;
-                        }
-                        else
-                        {
-                            // Black piece
-                            boardArray[pieceIndex + boardPosition ^ 56] = 1;
-                        }
-                    }
-                    colIdx++;
+                    boardArray[pieceIndex + arrayIndex] = turn == 'w' ? -1 : 1;
                 }
+                colIdx++;
             }
         }
 
@@ -191,7 +170,7 @@ public class MyBot : IChessBot
         float[] encoded = Encode(board.GetFenString());
         float prediction = 0;
         prediction = NeuralNetwork.Predict(encoded, FeatureWeights, FeatureBias, OutputWeights, OutputBias);
-        
+
         return (int)prediction + tempo;
     }
 
@@ -384,11 +363,11 @@ public class MyBot : IChessBot
                 if (ttBound == 0)
                     if (score >= beta)
                         return score;
-                else if (ttBound == 1)
-                    if (score <= alpha)
-                        return score;
-                else
-                    return score;
+                    else if (ttBound == 1)
+                        if (score <= alpha)
+                            return score;
+                        else
+                            return score;
             }
 
             // Standing Pat Pruning
@@ -484,13 +463,13 @@ public class MyBot : IChessBot
                 if (ttDepth >= depth)
                 {
                     if (ttBound == 0)
-                        if (score >= beta) 
+                        if (score >= beta)
                             return score;
-                    else if (ttBound == 1)
-                        if (score <= alpha)
-                            return score;
-                    else
-                        return score;
+                        else if (ttBound == 1)
+                            if (score <= alpha)
+                                return score;
+                            else
+                                return score;
                 }
             }
             else if (!nonPv && depth > iirDepth)
@@ -587,7 +566,8 @@ public class MyBot : IChessBot
 
                         if (!move.IsCapture)
                         {
-                            history[move.RawValue & 4095] += depth * depth;
+                            int bonus = depth * depth;
+                            history[move.RawValue & 4095] += bonus - (history[move.RawValue & 4095] * bonus / 16384);
 
                             // Keep track of the first killers for each ply
                             if (killers[killerIndex] == Move.NullMove)
@@ -627,7 +607,6 @@ public class MyBot : IChessBot
                     alpha = score - delta;
                     beta = score + delta;
                 }
-                killers = new Move[4096];
                 int newScore;
                 while (true)
                 {
