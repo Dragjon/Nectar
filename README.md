@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.0-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.1-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
 
 </div>
@@ -92,6 +92,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.1 | 57.7 +/- 26.4 | Quantisation
 | 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
 | 0.0.9 | 85.5 +/- 33.0 | Changed scale factor
 | 0.0.8 | 29.7 +/- 18.0 | No reset killers + History Gravity 
