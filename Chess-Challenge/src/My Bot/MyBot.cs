@@ -9,7 +9,7 @@ public class MyBot : IChessBot
 
     static readonly int inputLayerSize = 384;
     static readonly int hiddenLayerSize = 32;
-    static readonly int scale = 200;
+    static readonly int scale = 150;
 
     static float[,] FeatureWeights = new float[inputLayerSize, hiddenLayerSize];
     static float[] FeatureBias = new float[hiddenLayerSize];
@@ -104,15 +104,16 @@ public class MyBot : IChessBot
                 };
 
                 int boardPosition = rowIdx * 8 + colIdx;
-                int arrayIndex = turn == 'w' ? boardPosition : boardPosition ^ 56;
+                bool whiteTurn = turn == 'w';
+                int arrayIndex = whiteTurn ? boardPosition : boardPosition ^ 56;
 
                 if (char.IsUpper(character))
                 {
-                    boardArray[pieceIndex + arrayIndex] = turn == 'w' ? 1 : -1;
+                    boardArray[pieceIndex + arrayIndex] = whiteTurn ? 1 : -1;
                 }
                 else
                 {
-                    boardArray[pieceIndex + arrayIndex] = turn == 'w' ? -1 : 1;
+                    boardArray[pieceIndex + arrayIndex] = whiteTurn ? -1 : 1;
                 }
                 colIdx++;
             }

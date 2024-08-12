@@ -2,7 +2,6 @@
 using System.Linq;
 using System.IO;
 using ChessChallenge.API;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 public class MyBot : IChessBot
@@ -10,7 +9,7 @@ public class MyBot : IChessBot
 
     static readonly int inputLayerSize = 384;
     static readonly int hiddenLayerSize = 32;
-    static readonly int scale = 400;
+    static readonly int scale = 200;
 
     static float[,] FeatureWeights = new float[inputLayerSize, hiddenLayerSize];
     static float[] FeatureBias = new float[hiddenLayerSize];
@@ -141,11 +140,11 @@ public class MyBot : IChessBot
         {
 
             // Compute hidden layer activations
-            float[] hiddenLayer = new float[32];
-            for (int j = 0; j < 32; j++)
+            float[] hiddenLayer = new float[hiddenLayerSize];
+            for (int j = 0; j < hiddenLayerSize; j++)
             {
                 float sum = 0;
-                for (int i = 0; i < 384; i++)
+                for (int i = 0; i < inputLayerSize; i++)
                 {
                     sum += inputs[i] * inputWeights[i, j];
                 }
@@ -154,7 +153,7 @@ public class MyBot : IChessBot
 
             // Compute output layer activation
             float output = 0;
-            for (int j = 0; j < 32; j++)
+            for (int j = 0; j < hiddenLayerSize; j++)
             {
                 output += hiddenLayer[j] * outputWeights[j];
             }
@@ -176,7 +175,7 @@ public class MyBot : IChessBot
 
 
     static readonly double ttSlotSizeMB = 0.000024;
-    public static int hashSizeMB = 201;
+    public static int hashSizeMB = 1024;
     static int hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
 
     // this tuple is 24 bytes
