@@ -105,13 +105,13 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
-   1 snowy-v0.2                    191     103      64   75.0%    0.0%
-   2 CDrill_1800_Build_4           138      93      61   68.9%    6.6%
-   3 Napolean-v1.4.0                81      91      61   61.5%    1.6%
-   4 shallowblue-v2.0.0           -191     101      62   25.0%    4.8%
-   5 NectarV0.0.5                 -248     111      62   19.4%    6.5%
+   1 snowy-v0.2                    270     154      43   82.6%    2.3%
+   2 CDrill_1800_Build_4           132     105      44   68.2%   13.6%
+   3 Napolean-v1.4.0                 0     100      43   50.0%   11.6%
+   4 shallowblue-v2.0.0           -180     123      44   26.1%    2.3%
+   5 NectarV0.1.0                 -202     118      44   23.9%   11.4%
 
-Approx: 1560 - 1722
+Approx: 1595 - 1848
 ```
 ### Credits
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
