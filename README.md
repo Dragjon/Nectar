@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.0.9-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.0-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
 
 </div>
@@ -92,6 +92,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
 | 0.0.9 | 85.5 +/- 33.0 | Changed scale factor
 | 0.0.8 | 29.7 +/- 18.0 | No reset killers + History Gravity 
 | 0.0.7 | 27.6 +/- 17.2 | LMR Log Formula
@@ -116,6 +117,7 @@ Approx: 1560 - 1722
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
+- Gediminas (For the UCI interface for Sebastian Lagues's framework)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
 - And several more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
 ### Future plans
