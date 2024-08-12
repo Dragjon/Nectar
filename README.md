@@ -120,7 +120,7 @@ Approx: 1595 - 1848
 - cj5716 [Alexandria] (Parsing the stash data)
 - Gediminas (For the UCI interface for Sebastian Lagues's framework)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
-- And several more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
+- And a lot more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
 ### Future plans
 - Change input layer to 728 instead of 384
 - Do perspective networks
