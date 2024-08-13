@@ -27,6 +27,7 @@ You can download the precompiled executables for windows [here](https://github.c
 You can play the latest release of Nectar online at lichess [here](https://lichess.org/@/NectarBOT). Note that it will not always be online.
 ## Search Features
 ### Techniques
+- Fail-soft negamax search
 - Aspiration window search
 - Principal variation search (triple PVS)
 - Quiescence search
