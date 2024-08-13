@@ -47,7 +47,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - Transposition table ordering
 - MVV-LVA ordering
 - Killer moves (1 move per ply)
-- History values (with gravity)
+- History heuristic (with gravity)
 
 ## Neural Network
 ### Encoding Positions
