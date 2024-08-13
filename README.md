@@ -105,7 +105,7 @@ def encode_fen_to_384(fen, turn):
     
     return board_array
 ```
-### Architechture
+### Architecture 
 I trained 1 neural network for predicting WDL instead of 2 to train more data, as I could've just flipped the colors and positions of nstm. The architechture is 384x32x1 where the inputs are encoded board positions
 ```python
 model = Sequential([
