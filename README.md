@@ -25,6 +25,29 @@ My first successful attempt at using neural networks to create a relatively stro
 You can download the precompiled executables for windows [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
 ### Online
 You can play the latest release of Nectar online at lichess [here](https://lichess.org/@/NectarBOT). Note that it will not always be online.
+## Search Features
+### Techniques
+- Aspiration window search
+- Principal variation search (triple PVS)
+- Quiescence search
+### Pruning
+- Beta pruning
+- Reverse futility pruning
+- Null move pruning
+- Futility pruning
+- QSearch standing pat pruning
+- QSearch delta pruning
+- Transposition table cutoffs
+### Reductions/Extensions
+- Late moves reduction (Log formula)
+- Check extensions
+- Internal iterative reductions
+### Move ordering
+- Transposition table ordering
+- MVV-LVA ordering
+- Killer moves (1 move per ply)
+- History values (with gravity)
+
 ## Neural Network
 ### Encoding Positions
 The chess positions are encoded into a 384-element array like this, if its black to move (nstm) we flip the positions and sides
