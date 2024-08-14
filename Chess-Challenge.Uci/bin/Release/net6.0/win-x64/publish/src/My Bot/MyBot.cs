@@ -4,17 +4,22 @@ using System.IO;
 using ChessChallenge.API;
 using System.Diagnostics;
 
+/* Let it rest
+using static ChessChallenge.API.BitboardHelper;
+using System.Collections.Generic;
+using System.Numerics;
+*/
 public class MyBot : IChessBot
 {
 
     static readonly int inputLayerSize = 384;
     static readonly int hiddenLayerSize = 32;
     static readonly int scale = 150;
-
-    static float[,] FeatureWeights = new float[inputLayerSize, hiddenLayerSize];
-    static float[] FeatureBias = new float[hiddenLayerSize];
-    static float[] OutputWeights = new float[hiddenLayerSize];
-    static float OutputBias;
+    static readonly int quantise = 255;
+    static int[,] FeatureWeights = new int[inputLayerSize, hiddenLayerSize];
+    static int[] FeatureBias = new int[hiddenLayerSize];
+    static int[] OutputWeights = new int[hiddenLayerSize];
+    static int OutputBias;
 
     public static int SetWeights()
     {
@@ -30,7 +35,7 @@ public class MyBot : IChessBot
         for (int i = 0; i < inputLayerSize * hiddenLayerSize * 4; i += 4)
         {
             byte[] tmp1 = new byte[] { iweightsbytes[i], iweightsbytes[i + 1], iweightsbytes[i + 2], iweightsbytes[i + 3] };
-            FeatureWeights[row, col] = BitConverter.ToSingle(tmp1, 0);
+            FeatureWeights[row, col] = (int)(BitConverter.ToSingle(tmp1, 0) * quantise);
 
             col++;
             if (col == hiddenLayerSize)
@@ -45,7 +50,7 @@ public class MyBot : IChessBot
         for (int i = 0; i < hiddenLayerSize * 4; i += 4)
         {
             byte[] tmp2 = new byte[] { ibiasesbytes[i], ibiasesbytes[i + 1], ibiasesbytes[i + 2], ibiasesbytes[i + 3] };
-            FeatureBias[col] = BitConverter.ToSingle(tmp2, 0);
+            FeatureBias[col] = (int)(BitConverter.ToSingle(tmp2, 0) * quantise);
             col++;
         }
 
@@ -54,22 +59,22 @@ public class MyBot : IChessBot
         for (int i = 0; i < hiddenLayerSize * 4; i += 4)
         {
             byte[] tmp3 = new byte[] { oweightsbytes[i], oweightsbytes[i + 1], oweightsbytes[i + 2], oweightsbytes[i + 3] };
-            OutputWeights[col] = BitConverter.ToSingle(tmp3, 0);
+            OutputWeights[col] = (int)(BitConverter.ToSingle(tmp3, 0) * quantise);
             col++;
         }
 
         // Output bias
         byte[] tmp4 = new byte[] { obiasesbytes[0], obiasesbytes[1], obiasesbytes[2], obiasesbytes[3] };
-        OutputBias = BitConverter.ToSingle(tmp4, 0);
+        OutputBias = (int)(BitConverter.ToSingle(tmp4, 0) * quantise * quantise);
 
         return 0;
     }
 
     int initialise = SetWeights();
 
-    public static float[] Encode(string fen)
+    public static int[] Encode(string fen)
     {
-        float[] boardArray = new float[384];
+        int[] boardArray = new int[384];
         ReadOnlySpan<char> span = fen.AsSpan();
         int spaceIndex = span.IndexOf(' ');
         ReadOnlySpan<char> boardSpan = span.Slice(0, spaceIndex);
@@ -131,20 +136,20 @@ public class MyBot : IChessBot
         }
 
         // SCReLU activation function
-        private static float SCReLU(float x)
+        private static int SCReLU(int x)
         {
-            float clipped = Math.Clamp(x, 0, 1);
+            int clipped = Math.Clamp(x, 0, quantise);
             return clipped * clipped;
         }
 
-        public static float Predict(float[] inputs, float[,] inputWeights, float[] inputBiases, float[] outputWeights, float outputBias)
+        public static int Predict(int[] inputs, int[,] inputWeights, int[] inputBiases, int[] outputWeights, int outputBias)
         {
 
             // Compute hidden layer activations
-            float[] hiddenLayer = new float[hiddenLayerSize];
+            int[] hiddenLayer = new int[hiddenLayerSize];
             for (int j = 0; j < hiddenLayerSize; j++)
             {
-                float sum = 0;
+                int sum = 0;
                 for (int i = 0; i < inputLayerSize; i++)
                 {
                     sum += inputs[i] * inputWeights[i, j];
@@ -153,27 +158,157 @@ public class MyBot : IChessBot
             }
 
             // Compute output layer activation
-            float output = 0;
+            int output = 0;
             for (int j = 0; j < hiddenLayerSize; j++)
             {
                 output += hiddenLayer[j] * outputWeights[j];
             }
-            output = output + outputBias;
 
-            return output * scale;
+            return (output / quantise + outputBias) * scale / (quantise * quantise);
         }
 
     }
 
     public static int Evaluate(Board board)
     {
-        float[] encoded = Encode(board.GetFenString());
-        float prediction = 0;
+        int[] encoded = Encode(board.GetFenString());
+        int prediction = 0;
         prediction = NeuralNetwork.Predict(encoded, FeatureWeights, FeatureBias, OutputWeights, OutputBias);
 
-        return (int)prediction + tempo;
+        return prediction + tempo;
     }
 
+    public static int getStaticPieceScore(PieceType pieceType) {
+        switch (pieceType) {
+            case PieceType.Pawn:
+                return 100;
+            case PieceType.Knight:
+                return 300;
+            case PieceType.Bishop:
+                return 300;
+            case PieceType.Rook:
+                return 500;
+            case PieceType.Queen:
+                return 1000;
+            case PieceType.King:
+                return 100000;
+            default:
+                return 0;
+        }
+    }
+
+    /* Just going to let this code sleep for now, not sure how to test it yet
+    public static class StaticExchangeEvaluation
+    {
+        private static short[][][] _table;
+
+        public static void Init()
+        {
+            InitTable();
+            PopulateTable();
+        }
+
+        public static short Evaluate(Piece attackingPiece, Piece capturedPiece, Piece attacker, Piece defender)
+        {
+            return (short)(getStaticPieceScore(capturedPiece.PieceType) + _table[(int)attackingPiece.PieceType - 1][(int)attacker.PieceType - 1][(int)defender.PieceType - 1]);
+        }
+
+        private static void InitTable()
+        {
+            _table = new short[6][][];
+            for (var attackingPiece = 0; attackingPiece < 6; attackingPiece++)
+            {
+                _table[attackingPiece] = new short[256][];
+                for (var attackerIndex = 0; attackerIndex < 256; attackerIndex++)
+                {
+                    _table[attackingPiece][attackerIndex] = new short[256];
+                }
+            }
+        }
+
+        private static void PopulateTable()
+        {
+            var gainList = new List<int>();
+            for (var attackingPiece = 0; attackingPiece < 6; attackingPiece++)
+            {
+                for (ulong attackerIndex = 0; attackerIndex < 256; attackerIndex++)
+                {
+                    for (ulong defenderIndex = 0; defenderIndex < 256; defenderIndex++)
+                    {
+                        var attackingPieceSeeIndex = attackingPiece;
+                        var attackers = attackerIndex & ~(1ul << attackingPieceSeeIndex);
+                        var defenders = defenderIndex;
+
+                        var currentPieceOnField = attackingPiece;
+                        var result = 0;
+
+                        gainList.Add(result);
+
+                        if (defenders != 0)
+                        {
+                            var leastValuableDefenderPiece = GetLeastValuablePiece(defenders);
+                            defenders = (ulong)ChessChallenge.Chess.BitBoardUtility.PopLSB(ref defenders);
+
+                            result -= getStaticPieceScore((PieceType)(currentPieceOnField + 1));
+                            currentPieceOnField = leastValuableDefenderPiece;
+
+                            gainList.Add(result);
+
+                            while (attackers != 0)
+                            {
+                                var leastValuableAttackerPiece = GetLeastValuablePiece(attackers);
+                                attackers = (ulong)ChessChallenge.Chess.BitBoardUtility.PopLSB(ref attackers);
+
+                                result += getStaticPieceScore((PieceType)(currentPieceOnField + 1));
+                                currentPieceOnField = leastValuableAttackerPiece;
+
+                                gainList.Add(result);
+
+                                if (gainList[^1] > gainList[^3])
+                                {
+                                    result = gainList[^3];
+                                    break;
+                                }
+
+                                if (defenders != 0)
+                                {
+                                    leastValuableDefenderPiece = GetLeastValuablePiece(defenders);
+                                    defenders = (ulong)ChessChallenge.Chess.BitBoardUtility.PopLSB(ref defenders);
+
+                                    result -= getStaticPieceScore((PieceType)(currentPieceOnField + 1));
+                                    currentPieceOnField = leastValuableDefenderPiece;
+
+                                    gainList.Add(result);
+
+                                    if (gainList[^1] < gainList[^3])
+                                    {
+                                        result = gainList[^3];
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        _table[attackingPiece][attackerIndex][defenderIndex] = (short)result;
+                        gainList.Clear();
+                    }
+                }
+            }
+        }
+        private static int GetLeastValuablePiece(ulong data)
+        {
+            var leastValuableDefenderField = data & 1;
+            var leastValuableDefenderPiece = BitOperations.TrailingZeroCount(leastValuableDefenderField);
+
+            return leastValuableDefenderPiece;
+        }
+    }
+
+    */
 
     static readonly double ttSlotSizeMB = 0.000024;
     public static int hashSizeMB = 1024;
@@ -185,7 +320,7 @@ public class MyBot : IChessBot
         ushort, // moveRaw 4 bytes
         int, // score 4 bytes
         int, // depth 4 bytes
-        int // bound BOUND_EXACT=[1, 2147483647], BOUND_LOWER=2147483647, BOUND_UPPER=0 4 bytes
+        int // bound BOUND_EXACT=2, BOUND_LOWER=1, BOUND_UPPER=2 4 bytes
     )[] transpositionTable = new (ulong, ushort, int, int, int)[hashSize];
 
     // Variables for search
