@@ -47,7 +47,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - Transposition table ordering
 - MVV-LVA ordering
 - Killer moves (1 move per ply)
-- History heuristic (with gravity)
+- History heuristic (with gravity and malus)
 
 ## Neural Network
 ### Encoding Positions
@@ -124,6 +124,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.2 | 10.6 +/- 8.5 | Added history malus + overwrite killers
 | 0.1.1 | 57.7 +/- 26.4 | Quantisation
 | 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
 | 0.0.9 | 85.5 +/- 33.0 | Changed scale factor
