@@ -11,13 +11,45 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.0-yellow?style=for-the-badge)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)
-
+![Static Badge](https://img.shields.io/badge/Version-0.1.1-yellow?style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
+[![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
+[![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
+[![Lichess bullet rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=bullet)](https://lichess.org/@/Tokenstealer/perf/bullet)
 </div>
 
 ## Overview
 My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me!
+## Playing
+### Locally
+You can download the precompiled executables for windows [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
+### Online
+You can play the latest release of Nectar online at lichess [here](https://lichess.org/@/NectarBOT). Note that it will not always be online.
+## Search Features
+### Techniques
+- Fail-soft negamax search
+- Aspiration window search
+- Principal variation search (triple PVS)
+- Quiescence search
+### Pruning
+- Beta pruning
+- Reverse futility pruning
+- Null move pruning
+- Futility pruning
+- QSearch standing pat pruning
+- QSearch delta pruning
+- Transposition table cutoffs
+### Reductions/Extensions
+- Late moves reduction (Log formula)
+- Check extensions
+- Internal iterative reductions
+### Move ordering
+- Transposition table ordering
+- MVV-LVA ordering
+- Killer moves (1 move per ply)
+- History heuristic (with gravity)
+
+## Neural Network
 ### Encoding Positions
 The chess positions are encoded into a 384-element array like this, if its black to move (nstm) we flip the positions and sides
 ```python
@@ -73,8 +105,8 @@ def encode_fen_to_384(fen, turn):
     
     return board_array
 ```
-### Architechture
-I trained 1 neural network for predicting WDL instead of 2 to train more data, as I could've just flipped the colors and positions of nstm. The architechture is 384x32x1 where the inputs are encoded board positions
+### Architecture 
+I trained 1 neural network for predicting WDL instead of 2 to train more data, as I could've just flipped the colors and positions of nstm. The architecture is 384x32x1 where the inputs are encoded board positions
 ```python
 model = Sequential([
     Dense(32, input_shape=(input_shape,)),
@@ -92,6 +124,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.1 | 57.7 +/- 26.4 | Quantisation
 | 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
 | 0.0.9 | 85.5 +/- 33.0 | Changed scale factor
 | 0.0.8 | 29.7 +/- 18.0 | No reset killers + History Gravity 
@@ -102,7 +135,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 | 0.0.3 | 57.0 +/- 26.3 | Tuned with weather factory, Changed some implementations |
 | 0.0.2 | 11.5 +/- 9.2 | SCReLU nets |
 | 0.0.1 | - | Initial Release |
-### Rating
+## Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
    1 snowy-v0.2                    270     154      43   82.6%    2.3%
@@ -113,14 +146,14 @@ Rank Name                          Elo     +/-   Games   Score    Draw
 
 Approx: 1595 - 1848
 ```
-### Credits
+## Credits
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
 - Gediminas (For the UCI interface for Sebastian Lagues's framework)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
-- And several more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
-### Future plans
+- And a lot more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
+## Future plans
 - Change input layer to 728 instead of 384
 - Do perspective networks
 - Do the UE of NNUE
