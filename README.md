@@ -148,6 +148,7 @@ Rank Name                          Elo     +/-   Games   Score    Draw
 Approx: 1595 - 1848
 ```
 ## Credits
+- Sebastian Lague (For the whole chess framework)
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
