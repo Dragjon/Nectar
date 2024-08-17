@@ -13,7 +13,7 @@ public class MyBot : IChessBot
 {
 
     static readonly int inputLayerSize = 384;
-    static readonly int hiddenLayerSize = 32;
+    static readonly int hiddenLayerSize = 8;
     static readonly int scale = 150;
     static readonly int quantise = 255;
     static int[,] FeatureWeights = new int[inputLayerSize, hiddenLayerSize];
@@ -560,6 +560,7 @@ public class MyBot : IChessBot
             // Hard time limit
             if (depth > 1 && timer.MillisecondsElapsedThisTurn >= timer.MillisecondsRemaining / hardBoundTimeRatio) throw null;
 
+
             selDepth = Math.Max(ply, selDepth);
 
             int mating_value = -mateScore - ply;
@@ -653,13 +654,17 @@ public class MyBot : IChessBot
                                           : move == killers[killerIndex] ? 500_000_000_000_000_000
                                           : history[move.StartSquare.Index, move.TargetSquare.Index]))
             {
-                if (nonPv && depth <= futilityDepth && !move.IsCapture && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
+                bool isQuiet = !move.IsCapture;
+
+                if (nonPv && depth <= futilityDepth && isQuiet && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
+                    continue;
+
+                if (moveCount > 3 + depth * depth && isQuiet && nonPv)
                     continue;
 
                 moveCount++;
                 nodes++;
 
-                bool isQuiet = !move.IsCapture;
 
                 int reduction = moveCount > lmrCount && depth >= lmrDepth && isQuiet && !nodeIsCheck && nonPv ? (int)(lmrBase + Math.Log(depth) * Math.Log(moveCount) * lmrMul) : 0;
 

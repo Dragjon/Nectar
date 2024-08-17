@@ -13,7 +13,7 @@ public class MyBot : IChessBot
 {
 
     static readonly int inputLayerSize = 384;
-    static readonly int hiddenLayerSize = 32;
+    static readonly int hiddenLayerSize = 8;
     static readonly int scale = 150;
     static readonly int quantise = 255;
     static int[,] FeatureWeights = new int[inputLayerSize, hiddenLayerSize];
@@ -178,6 +178,7 @@ public class MyBot : IChessBot
         return prediction + tempo;
     }
 
+    /* Just going to let this code sleep for now, not sure how to test it yet
     public static int getStaticPieceScore(PieceType pieceType) {
         switch (pieceType) {
             case PieceType.Pawn:
@@ -197,7 +198,6 @@ public class MyBot : IChessBot
         }
     }
 
-    /* Just going to let this code sleep for now, not sure how to test it yet
     public static class StaticExchangeEvaluation
     {
         private static short[][][] _table;
@@ -418,8 +418,8 @@ public class MyBot : IChessBot
         // Killer moves, 1 for each depth
         Move[] killers = new Move[4096];
 
-        // History moves
-        int[] history = new int[4096];
+        // History moves from-to
+        int[,] history = new int[64, 64];
 
         int globalDepth = 1; // To be incremented for each iterative loop
         ulong nodes = 0; // To keep track of searched positions in 1 iterative loop
@@ -528,18 +528,18 @@ public class MyBot : IChessBot
                 score = -qSearch(-beta, -alpha, ply + 1);
                 board.UndoMove(move);
 
-                if (score > alpha)
-                    alpha = score;
-
                 if (score > bestScore)
                 {
                     bestMove = move;
                     bestScore = score;
+                    if (score > alpha)
+                    {
+                        alpha = score;
+                        // A/B pruning
+                        if (score >= beta)
+                            break;
+                    }
                 }
-
-                // A/B pruning
-                if (score >= beta)
-                    break;
 
             }
 
@@ -559,6 +559,7 @@ public class MyBot : IChessBot
 
             // Hard time limit
             if (depth > 1 && timer.MillisecondsElapsedThisTurn >= timer.MillisecondsRemaining / hardBoundTimeRatio) throw null;
+
 
             selDepth = Math.Max(ply, selDepth);
 
@@ -637,24 +638,35 @@ public class MyBot : IChessBot
 
             int bestScore = -30000;
             int moveCount = 0;
+            int quietIndex = 0;
 
             // orderVariable(priority)
             // TT(0),  MVV-LVA ordering(1),  Killer Moves(2)
 
             Move bestMove = Move.NullMove;
             Move[] legals = board.GetLegalMoves();
+
+            (int, int)[] quietsFromTo = new (int, int)[4096];
+            Array.Fill(quietsFromTo, (-1, -1));
+
             foreach (Move move in legals.OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
                                           : move.IsCapture ? 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType
                                           : move == killers[killerIndex] ? 500_000_000_000_000_000
-                                          : history[move.RawValue & 4095]))
+                                          : history[move.StartSquare.Index, move.TargetSquare.Index]))
             {
-                if (nonPv && depth <= futilityDepth && !move.IsCapture && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
+                bool isQuiet = !move.IsCapture;
+
+                if (nonPv && depth <= futilityDepth && isQuiet && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
+                    continue;
+
+                if (moveCount > 3 + depth * depth && isQuiet && nonPv)
                     continue;
 
                 moveCount++;
                 nodes++;
 
-                int reduction = moveCount > lmrCount && depth >= lmrDepth && !move.IsCapture && !nodeIsCheck && nonPv ? (int)(lmrBase + Math.Log(depth) * Math.Log(moveCount) * lmrMul) : 0;
+
+                int reduction = moveCount > lmrCount && depth >= lmrDepth && isQuiet && !nodeIsCheck && nonPv ? (int)(lmrBase + Math.Log(depth) * Math.Log(moveCount) * lmrMul) : 0;
 
                 board.MakeMove(move);
 
@@ -685,9 +697,6 @@ public class MyBot : IChessBot
                 board.UndoMove(move);
 
                 // Updating stuff
-                if (score > alpha)
-                    alpha = score;
-
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -695,21 +704,47 @@ public class MyBot : IChessBot
                     if (isRoot)
                         rootBestMove = move;
 
-                    // A/B pruning
-                    if (score >= beta)
+                    if (score > alpha)
                     {
+                        alpha = score;
 
-                        if (!move.IsCapture)
+                        // A/B pruning
+                        if (score >= beta)
                         {
-                            int bonus = depth * depth;
-                            history[move.RawValue & 4095] += bonus - (history[move.RawValue & 4095] * bonus / 16384);
 
-                            // Keep track of the first killers for each ply
-                            if (killers[killerIndex] == Move.NullMove)
+                            if (isQuiet)
+                            {
+                                int bonus = depth * depth;
+
+                                // History Malus
+                                foreach (var indexes in quietsFromTo)
+                                {
+                                    if (indexes.Item1 == -1)
+                                        break;
+                                    history[indexes.Item1, indexes.Item2] -= bonus + (history[indexes.Item1, indexes.Item2] * bonus / 16384);
+                                }
+
+                                // History bonus
+                                history[move.StartSquare.Index, move.TargetSquare.Index] += bonus - (history[move.StartSquare.Index, move.TargetSquare.Index] * bonus / 16384);
+
+                                // Update quiet list for this
+                                quietsFromTo[quietIndex] = (move.StartSquare.Index, move.TargetSquare.Index);
+                                quietIndex++;
+
+                                // Killer moves
                                 killers[killerIndex] = move;
+
+                            }
+                            break;
                         }
-                        break;
                     }
+                }
+
+                // Update quiet list
+                if (isQuiet)
+                {
+                    quietsFromTo[quietIndex] = (move.StartSquare.Index, move.TargetSquare.Index);
+                    quietIndex++;
                 }
             }
 

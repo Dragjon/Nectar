@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "Zw/XJ+l6EAbtkG0LgNzUYhyMiYnEGhnKguMh32P+1EUrcqQYQczNe9zOGoIs/9o4AI4JzfG7aM712FC1BRrroQ==",
+  "dgSpecHash": "uP1B6++bFR2XreanbWfAHtuJ0Z4JpP8WXpVZLRcnFeHXfFtclQn1QBom8FJAAuq+840tkSwr58FbUO+sv3420Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
+  "projectFilePath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dragon\\.nuget\\packages\\raylib-cs\\4.5.0.2\\raylib-cs.4.5.0.2.nupkg.sha512",
-    "C:\\Users\\dragon\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+    "C:\\Users\\dragon\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\dragon\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\6.0.24\\microsoft.netcore.app.runtime.win-x64.6.0.24.nupkg.sha512",
+    "C:\\Users\\dragon\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\6.0.24\\microsoft.windowsdesktop.app.runtime.win-x64.6.0.24.nupkg.sha512",
+    "C:\\Users\\dragon\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\6.0.24\\microsoft.aspnetcore.app.runtime.win-x64.6.0.24.nupkg.sha512"
   ],
   "logs": []
 }
