@@ -124,6 +124,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.3 | 16.7 +/- 12.3 | Changed 32hl -> 8hl
 | 0.1.2 | 10.6 +/- 8.5 | Added history malus + overwrite killers
 | 0.1.1 | 57.7 +/- 26.4 | Quantisation
 | 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
