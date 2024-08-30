@@ -6,12 +6,12 @@
   src="https://github.com/user-attachments/assets/7e8514a1-19ee-46f2-a23a-7054d3e2f432">
 
 <h3>Nectar</h3>
-<b>My first NN chess engine</b>
+<b>My first NNUE chess engine</b>
 <br>
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.3-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.4-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -19,7 +19,7 @@
 </div>
 
 ## Overview
-My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me!
+My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me! You can track my progress [here](https://sprt.free.nf)
 ## Playing
 ### Locally
 You can download the precompiled executables for windows [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
@@ -31,6 +31,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - Aspiration window search
 - Principal variation search (triple PVS)
 - Quiescence search
+- Efficient updates (UE)
 ### Pruning
 - Beta pruning
 - Reverse futility pruning
@@ -51,21 +52,21 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 
 ## Neural Network
 ### Encoding Positions
-The chess positions are encoded into a 384-element array like this, if its black to move (nstm) we flip the positions and sides
+The chess positions are encoded into a 768-element array like this, in white's POV
 ```python
-def encode_fen_to_384(fen, turn):
+def encode_fen(fen):
     # Define the index mapping for each piece type in the 384-element array
     piece_to_index = {
-        'P': 0,  'p': 0,  # Pawns
-        'N': 64, 'n': 64, # Knights
-        'B': 128, 'b': 128, # Bishops
-        'R': 192, 'r': 192, # Rooks
-        'Q': 256, 'q': 256, # Queens
-        'K': 320, 'k': 320  # Kings
+        'P': 0,  'p': 384,  # Pawns
+        'N': 64, 'n': 448, # Knights
+        'B': 128, 'b': 512, # Bishops
+        'R': 192, 'r': 576, # Rooks
+        'Q': 256, 'q': 640, # Queens
+        'K': 320, 'k': 704  # Kings
     }
     
     # Initialize the 384-element array
-    board_array = np.zeros(384, dtype=int)
+    board_array = np.zeros(768, dtype=np.int8)  
     
     # Split the FEN string to get the board layout
     board, _ = fen.split(' ', 1)
@@ -83,33 +84,16 @@ def encode_fen_to_384(fen, turn):
                 # Piece, determine its position in the 384-element array
                 piece_index = piece_to_index[char]
                 board_position = row_idx * 8 + col_idx
-
-                if turn == 0:
-                    # stm
-                    if char.isupper():
-                        # White piece
-                        board_array[piece_index + board_position] = 1
-                    else:
-                        # Black piece
-                        board_array[piece_index + board_position] = -1
-                    col_idx += 1
-                else:
-                    # nstm
-                    if char.isupper():
-                        # White piece
-                        board_array[piece_index + board_position ^ 56] = -1
-                    else:
-                        # Black piece
-                        board_array[piece_index + board_position ^ 56] = 1
-                    col_idx += 1
+                board_array[piece_index + board_position] = 1
+                col_idx += 1
     
     return board_array
 ```
 ### Architecture 
-I trained 1 neural network for predicting WDL instead of 2 to train more data, as I could've just flipped the colors and positions of nstm. The architecture is 384x8x1 where the inputs are encoded board positions
+A 768->N->1 network in white's POV
 ```python
 model = Sequential([
-    Dense(8, input_shape=(input_shape,)),
+    Dense(22, input_shape=(input_shape,)),
     Lambda(SCReLU),
     Dense(1, activation='sigmoid')
 ])
@@ -120,10 +104,12 @@ def SCReLU(x):
     return tf.square(tf.clip_by_value(x, 0, 1))
 ```
 ### Training
-The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
+* >= V0.1.4: Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture
+* <= V0.1.3: The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.4 | 51.0 +/- 24.6 | Changed input shape and num hidden layers, Efficient updates, SIMD, Hand-retuning values, Refactors
 | 0.1.3 | 16.7 +/- 12.3 | Changed 32hl -> 8hl
 | 0.1.2 | 10.6 +/- 8.5 | Added history malus + overwrite killers
 | 0.1.1 | 57.7 +/- 26.4 | Quantisation
@@ -157,6 +143,6 @@ Approx: 1595 - 1848
 - Matt [Heimdall] (Nicely documented code, based some params on it)
 - And a lot more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
 ## Future plans
-- Change input layer to 728 instead of 384
+- ~Change input layer to 728 instead of 384~
 - Do perspective networks
-- Do the UE of NNUE
+- ~Do the UE of NNUE~
