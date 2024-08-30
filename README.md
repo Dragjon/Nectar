@@ -51,6 +51,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - History heuristic (with gravity and malus)
 
 ## Neural Network
+Trained with [Nano](https://github.com/Dragjon/Nano)
 ### Encoding Positions
 The chess positions are encoded into a 768-element array like this, in white's POV
 ```python
@@ -104,8 +105,8 @@ def SCReLU(x):
     return tf.square(tf.clip_by_value(x, 0, 1))
 ```
 ### Training
-* >= V0.1.4: Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture
-* <= V0.1.3: The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
+* V0.1.4 onwards: Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture
+* Before V0.1.3: The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
