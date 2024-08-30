@@ -141,8 +141,10 @@ Approx: 1595 - 1848
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
 - Gediminas (For the UCI interface for Sebastian Lagues's framework)
+- gabe [Obsidian] (NNUE explanations)
+- jw [Obsidian] (NNUE explanations)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
-- And a lot more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV)
+- And a lot more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV) and [Stockfish Discord](https://discord.gg/ZH62b2rS)
 ## Future plans
 - ~Change input layer to 728 instead of 384~
 - Do perspective networks
