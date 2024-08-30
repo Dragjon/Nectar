@@ -3,20 +3,15 @@ using System.Linq;
 using System.IO;
 using ChessChallenge.API;
 using System.Diagnostics;
-
-/* Let it rest
-using static ChessChallenge.API.BitboardHelper;
-using System.Collections.Generic;
-using System.Numerics;
-*/
 public class MyBot : IChessBot
 {
 
-    static readonly int inputLayerSize = 384;
-    static readonly int hiddenLayerSize = 8;
+    static readonly int inputLayerSize = 768;
+    static readonly int hiddenLayerSize = 22;
     static readonly int scale = 150;
     static readonly int quantise = 255;
-    static int[,] FeatureWeights = new int[inputLayerSize, hiddenLayerSize];
+    static readonly int quantiseSquared = 255 * 255;
+    static int[] FeatureWeights = new int[inputLayerSize * hiddenLayerSize];
     static int[] FeatureBias = new int[hiddenLayerSize];
     static int[] OutputWeights = new int[hiddenLayerSize];
     static int OutputBias;
@@ -35,7 +30,7 @@ public class MyBot : IChessBot
         for (int i = 0; i < inputLayerSize * hiddenLayerSize * 4; i += 4)
         {
             byte[] tmp1 = new byte[] { iweightsbytes[i], iweightsbytes[i + 1], iweightsbytes[i + 2], iweightsbytes[i + 3] };
-            FeatureWeights[row, col] = (int)(BitConverter.ToSingle(tmp1, 0) * quantise);
+            FeatureWeights[row * hiddenLayerSize + col] = (int)(BitConverter.ToSingle(tmp1, 0) * quantise);
 
             col++;
             if (col == hiddenLayerSize)
@@ -74,11 +69,10 @@ public class MyBot : IChessBot
 
     public static int[] Encode(string fen)
     {
-        int[] boardArray = new int[384];
+        int[] boardArray = new int[inputLayerSize];
         ReadOnlySpan<char> span = fen.AsSpan();
         int spaceIndex = span.IndexOf(' ');
         ReadOnlySpan<char> boardSpan = span.Slice(0, spaceIndex);
-        char turn = span[spaceIndex + 1];
         ReadOnlySpan<char> rows = boardSpan;
 
         int rowIdx = 0;
@@ -99,218 +93,281 @@ public class MyBot : IChessBot
             {
                 int pieceIndex = character switch
                 {
-                    'P' or 'p' => 0,
-                    'N' or 'n' => 64,
-                    'B' or 'b' => 128,
-                    'R' or 'r' => 192,
-                    'Q' or 'q' => 256,
-                    'K' or 'k' => 320,
+                    'P' => 0,
+                    'N' => 64,
+                    'B' => 128,
+                    'R' => 192,
+                    'Q' => 256,
+                    'K' => 320,
+                    'p' => 384,
+                    'n' => 448,
+                    'b' => 512,
+                    'r' => 576,
+                    'q' => 640,
+                    'k' => 704,
                     _ => throw new InvalidOperationException("Invalid piece character")
                 };
 
                 int boardPosition = rowIdx * 8 + colIdx;
-                bool whiteTurn = turn == 'w';
-                int arrayIndex = whiteTurn ? boardPosition : boardPosition ^ 56;
 
-                if (char.IsUpper(character))
-                {
-                    boardArray[pieceIndex + arrayIndex] = whiteTurn ? 1 : -1;
-                }
-                else
-                {
-                    boardArray[pieceIndex + arrayIndex] = whiteTurn ? -1 : 1;
-                }
+                boardArray[pieceIndex + boardPosition] = 1;
+
                 colIdx++;
             }
         }
 
         return boardArray;
     }
-    public class NeuralNetwork
-    {
 
-        // Sigmoid activation function
-        private static float Sigmoid(float x)
+    static int[] accumulators = new int[inputLayerSize];
+
+    public void undoUpdateAccumulators(Piece piece, Move move)
+    {
+        int startSqIndex = move.StartSquare.Index ^ 56;
+        int targetSqIndex = move.TargetSquare.Index ^ 56;
+        int pieceIndex = (int)(piece.PieceType - 1) * 64 + (piece.IsWhite ? 0 : 384);
+
+        accumulators[pieceIndex + startSqIndex] = 1;
+        accumulators[pieceIndex + targetSqIndex] = 0;
+
+        if (move.IsEnPassant)
         {
-            return 1 / (1 + (float)Math.Exp(-x));
+            accumulators[384 * (piece.IsWhite ? 1 : 0) + targetSqIndex + (piece.IsWhite ? 8 : -8)] = 1;
         }
 
+        else if (move.IsCapture)
+        {
+            int capturedPieceIndex = (int)(move.CapturePieceType - 1) * 64 + (piece.IsWhite ? 384 : 0);
+            accumulators[capturedPieceIndex + targetSqIndex] = 1;
+
+            if (move.IsPromotion)
+            {
+                int promoPieceIndex = (int)(move.PromotionPieceType - 1) * 64 + (piece.IsWhite ? 0 : 384);
+                accumulators[promoPieceIndex + targetSqIndex] = 0;
+            }
+        }
+
+        else if (move.IsPromotion)
+        {
+            int promoPieceIndex = (int)(move.PromotionPieceType - 1) * 64 + (piece.IsWhite ? 0 : 384);
+            accumulators[promoPieceIndex + targetSqIndex] = 0;
+        }
+
+
+        else if (move.IsCastles)
+        {
+            int rookOffset = piece.IsWhite ? 192 : 576;
+            switch (targetSqIndex)
+            {
+                case 62: // White KingSide
+                    accumulators[rookOffset + 63] = 1;
+                    accumulators[rookOffset + 61] = 0;
+                    break;
+                case 58: // White QueenSide
+                    accumulators[rookOffset + 56] = 1;
+                    accumulators[rookOffset + 59] = 0;
+                    break;
+                case 6: // Black KingSide
+                    accumulators[rookOffset + 7] = 1;
+                    accumulators[rookOffset + 5] = 0;
+                    break;
+                case 2: // Black QueenSide
+                    accumulators[rookOffset + 0] = 1;
+                    accumulators[rookOffset + 3] = 0;
+                    break;
+            }
+        }
+    }
+
+    public void updateAccumulators(Piece piece, Move move)
+    {
+        int startSqIndex = move.StartSquare.Index ^ 56;
+        int targetSqIndex = move.TargetSquare.Index ^ 56;
+        int pieceIndex = (int)(piece.PieceType - 1) * 64 + (piece.IsWhite ? 0 : 384);
+
+        accumulators[pieceIndex + startSqIndex] = 0;
+        accumulators[pieceIndex + targetSqIndex] = 1;
+
+
+        if (move.IsEnPassant)
+        {
+            accumulators[384 * (piece.IsWhite ? 1 : 0) + targetSqIndex + (piece.IsWhite ? 8 : -8)] = 0;
+        }
+
+        else if (move.IsCapture)
+        {
+            int capturedPieceIndex = (int)(move.CapturePieceType - 1) * 64 + (piece.IsWhite ? 384 : 0);
+            accumulators[capturedPieceIndex + targetSqIndex] = 0;
+
+
+            if (move.IsPromotion)
+            {
+                int promoPieceIndex = (int)(move.PromotionPieceType - 1) * 64 + (piece.IsWhite ? 0 : 384);
+                accumulators[promoPieceIndex + targetSqIndex] = 1;
+                accumulators[pieceIndex + targetSqIndex] = 0;
+            }
+
+        }
+
+        else if (move.IsPromotion)
+        {
+            int promoPieceIndex = (int)(move.PromotionPieceType - 1) * 64 + (piece.IsWhite ? 0 : 384);
+            accumulators[promoPieceIndex + targetSqIndex] = 1;
+            accumulators[pieceIndex + targetSqIndex] = 0;
+        }
+
+        else if (move.IsCastles)
+        {
+            int rookOffset = piece.IsWhite ? 192 : 576;
+            switch (targetSqIndex)
+            {
+                case 62: // White KingSide
+                    accumulators[rookOffset + 63] = 0;
+                    accumulators[rookOffset + 61] = 1;
+                    break;
+                case 58: // White QueenSide
+                    accumulators[rookOffset + 56] = 0;
+                    accumulators[rookOffset + 59] = 1;
+                    break;
+                case 6: // Black KingSide
+                    accumulators[rookOffset + 7] = 0;
+                    accumulators[rookOffset + 5] = 1;
+                    break;
+                case 2: // Black QueenSide
+                    accumulators[rookOffset + 0] = 0;
+                    accumulators[rookOffset + 3] = 1;
+                    break;
+            }
+        }
+    }
+
+    public class NeuralNetwork
+    { 
         // SCReLU activation function
         private static int SCReLU(int x)
         {
-            int clipped = Math.Clamp(x, 0, quantise);
-            return clipped * clipped;
+            return (x < 0) ? 0 : (x > quantise) ? quantiseSquared : x * x;
         }
 
-        public static int Predict(int[] inputs, int[,] inputWeights, int[] inputBiases, int[] outputWeights, int outputBias)
+        public static unsafe int Predict(int[] inputs)
         {
+            int* hiddenLayer = stackalloc int[hiddenLayerSize]; // Use stack allocation for the hidden layer.
 
-            // Compute hidden layer activations
-            int[] hiddenLayer = new int[hiddenLayerSize];
-            for (int j = 0; j < hiddenLayerSize; j++)
+            fixed (int* pInputs = inputs)
+            fixed (int* pInputWeights = FeatureWeights)
+            fixed (int* pInputBiases = FeatureBias)
+            fixed (int* pOutputWeights = OutputWeights)
             {
-                int sum = 0;
-                for (int i = 0; i < inputLayerSize; i++)
+                // Process the hidden layer with loop unrolling and SIMD-like processing.
+                for (int j = 0; j < hiddenLayerSize; j++)
                 {
-                    sum += inputs[i] * inputWeights[i, j];
+                    int sum = 0;
+                    int* pWeights = pInputWeights + j;
+
+                    int i = 0;
+                    int loopEnd = inputLayerSize - (inputLayerSize % 4);
+
+                    // SIMD-like unrolling (4x at a time)
+                    for (; i < loopEnd; i += 4)
+                    {
+                        sum += pInputs[i] * pWeights[0] +
+                               pInputs[i + 1] * pWeights[hiddenLayerSize] +
+                               pInputs[i + 2] * pWeights[2 * hiddenLayerSize] +
+                               pInputs[i + 3] * pWeights[3 * hiddenLayerSize];
+
+                        pWeights += 4 * hiddenLayerSize;
+                    }
+
+                    // Handle any remaining elements
+                    for (; i < inputLayerSize; i++)
+                    {
+                        sum += pInputs[i] * *pWeights;
+                        pWeights += hiddenLayerSize;
+                    }
+
+                    hiddenLayer[j] = SCReLU(sum + pInputBiases[j]);
                 }
-                hiddenLayer[j] = SCReLU(sum + inputBiases[j]);
-            }
 
-            // Compute output layer activation
-            int output = 0;
-            for (int j = 0; j < hiddenLayerSize; j++)
+                // Output layer computation
+                int output = 0;
+
+                for (int j = 0; j < hiddenLayerSize; j++)
+                {
+                    output += hiddenLayer[j] * pOutputWeights[j];
+                }
+
+                return (output / quantise + OutputBias) * scale / quantiseSquared;
+            }
+        }
+
+
+        public static unsafe int PredictWithAcc()
+        {
+            int* hiddenLayer = stackalloc int[hiddenLayerSize]; // Use stack allocation for the hidden layer.
+
+            fixed (int* pAccumulators = accumulators)
+            fixed (int* pInputWeights = FeatureWeights)
+            fixed (int* pInputBiases = FeatureBias)
+            fixed (int* pOutputWeights = OutputWeights)
             {
-                output += hiddenLayer[j] * outputWeights[j];
-            }
+                // Process the hidden layer with loop unrolling and SIMD.
+                for (int j = 0; j < hiddenLayerSize; j++)
+                {
+                    int sum = 0;
+                    int* pWeights = pInputWeights + j;
 
-            return (output / quantise + outputBias) * scale / (quantise * quantise);
+                    int i = 0;
+                    int loopEnd = inputLayerSize - (inputLayerSize % 4);
+
+                    // SIMD-like unrolling (4x at a time)
+                    for (; i < loopEnd; i += 4)
+                    {
+                        sum += pAccumulators[i] * pWeights[0] +
+                               pAccumulators[i + 1] * pWeights[hiddenLayerSize] +
+                               pAccumulators[i + 2] * pWeights[2 * hiddenLayerSize] +
+                               pAccumulators[i + 3] * pWeights[3 * hiddenLayerSize];
+
+                        pWeights += 4 * hiddenLayerSize;
+                    }
+
+                    // Handle any remaining elements
+                    for (; i < inputLayerSize; i++)
+                    {
+                        sum += pAccumulators[i] * *pWeights;
+                        pWeights += hiddenLayerSize;
+                    }
+
+                    hiddenLayer[j] = SCReLU(sum + pInputBiases[j]);
+                }
+
+                // Output layer computation
+                int output = 0;
+
+                for (int j = 0; j < hiddenLayerSize; j++)
+                {
+                    output += hiddenLayer[j] * pOutputWeights[j];
+                }
+
+                return (output / quantise + OutputBias) * scale / quantiseSquared;
+            }
         }
 
     }
 
     public static int Evaluate(Board board)
     {
-        int[] encoded = Encode(board.GetFenString());
-        int prediction = 0;
-        prediction = NeuralNetwork.Predict(encoded, FeatureWeights, FeatureBias, OutputWeights, OutputBias);
-
-        return prediction + tempo;
-    }
-
-    /* Just going to let this code sleep for now, not sure how to test it yet
-    public static int getStaticPieceScore(PieceType pieceType) {
-        switch (pieceType) {
-            case PieceType.Pawn:
-                return 100;
-            case PieceType.Knight:
-                return 300;
-            case PieceType.Bishop:
-                return 300;
-            case PieceType.Rook:
-                return 500;
-            case PieceType.Queen:
-                return 1000;
-            case PieceType.King:
-                return 100000;
-            default:
-                return 0;
+        if (board.IsWhiteToMove)
+        {
+            return NeuralNetwork.PredictWithAcc() + tempo;
+        }
+        else
+        {
+            return -NeuralNetwork.PredictWithAcc() + tempo;
         }
     }
 
-    public static class StaticExchangeEvaluation
-    {
-        private static short[][][] _table;
 
-        public static void Init()
-        {
-            InitTable();
-            PopulateTable();
-        }
-
-        public static short Evaluate(Piece attackingPiece, Piece capturedPiece, Piece attacker, Piece defender)
-        {
-            return (short)(getStaticPieceScore(capturedPiece.PieceType) + _table[(int)attackingPiece.PieceType - 1][(int)attacker.PieceType - 1][(int)defender.PieceType - 1]);
-        }
-
-        private static void InitTable()
-        {
-            _table = new short[6][][];
-            for (var attackingPiece = 0; attackingPiece < 6; attackingPiece++)
-            {
-                _table[attackingPiece] = new short[256][];
-                for (var attackerIndex = 0; attackerIndex < 256; attackerIndex++)
-                {
-                    _table[attackingPiece][attackerIndex] = new short[256];
-                }
-            }
-        }
-
-        private static void PopulateTable()
-        {
-            var gainList = new List<int>();
-            for (var attackingPiece = 0; attackingPiece < 6; attackingPiece++)
-            {
-                for (ulong attackerIndex = 0; attackerIndex < 256; attackerIndex++)
-                {
-                    for (ulong defenderIndex = 0; defenderIndex < 256; defenderIndex++)
-                    {
-                        var attackingPieceSeeIndex = attackingPiece;
-                        var attackers = attackerIndex & ~(1ul << attackingPieceSeeIndex);
-                        var defenders = defenderIndex;
-
-                        var currentPieceOnField = attackingPiece;
-                        var result = 0;
-
-                        gainList.Add(result);
-
-                        if (defenders != 0)
-                        {
-                            var leastValuableDefenderPiece = GetLeastValuablePiece(defenders);
-                            defenders = (ulong)ChessChallenge.Chess.BitBoardUtility.PopLSB(ref defenders);
-
-                            result -= getStaticPieceScore((PieceType)(currentPieceOnField + 1));
-                            currentPieceOnField = leastValuableDefenderPiece;
-
-                            gainList.Add(result);
-
-                            while (attackers != 0)
-                            {
-                                var leastValuableAttackerPiece = GetLeastValuablePiece(attackers);
-                                attackers = (ulong)ChessChallenge.Chess.BitBoardUtility.PopLSB(ref attackers);
-
-                                result += getStaticPieceScore((PieceType)(currentPieceOnField + 1));
-                                currentPieceOnField = leastValuableAttackerPiece;
-
-                                gainList.Add(result);
-
-                                if (gainList[^1] > gainList[^3])
-                                {
-                                    result = gainList[^3];
-                                    break;
-                                }
-
-                                if (defenders != 0)
-                                {
-                                    leastValuableDefenderPiece = GetLeastValuablePiece(defenders);
-                                    defenders = (ulong)ChessChallenge.Chess.BitBoardUtility.PopLSB(ref defenders);
-
-                                    result -= getStaticPieceScore((PieceType)(currentPieceOnField + 1));
-                                    currentPieceOnField = leastValuableDefenderPiece;
-
-                                    gainList.Add(result);
-
-                                    if (gainList[^1] < gainList[^3])
-                                    {
-                                        result = gainList[^3];
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                        }
-
-                        _table[attackingPiece][attackerIndex][defenderIndex] = (short)result;
-                        gainList.Clear();
-                    }
-                }
-            }
-        }
-        private static int GetLeastValuablePiece(ulong data)
-        {
-            var leastValuableDefenderField = data & 1;
-            var leastValuableDefenderPiece = BitOperations.TrailingZeroCount(leastValuableDefenderField);
-
-            return leastValuableDefenderPiece;
-        }
-    }
-
-    */
-
-    static readonly double ttSlotSizeMB = 0.000024;
+    static readonly float ttSlotSizeMB = 0.000024F;
     public static int hashSizeMB = 1024;
     static int hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
 
@@ -327,6 +384,8 @@ public class MyBot : IChessBot
     static int infinity = 30000;
     static int mateScore = -20000;
 
+    public static int nodeLimit = -1;
+
     public static int rfpMargin = 85;
     public static int rfpDepth = 9;
     public static int NullMoveR = 4;
@@ -340,14 +399,14 @@ public class MyBot : IChessBot
     public static int iirDepth = 3;
     public static int lmrCount = 5;
     public static int lmrDepth = 2;
-    public static double lmrBase = 0.75D;
-    public static double lmrMul = 0.4D;
+    public static float lmrBase = 0.75F;
+    public static float lmrMul = 0.4F;
     public static int tempo = 14;
-    public static int[] deltas = { 200, 500, 600, 1000, 2000 };
+    public static int[] deltas = { 90, 340, 350, 410, 930 };
 
     enum ScoreType { upperbound, lowerbound, none };
 
-    public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta)
+    public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta, int VnodeLimit)
     {
         hashSizeMB = VHashSizeMB;
         hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
@@ -370,6 +429,8 @@ public class MyBot : IChessBot
         deltas[4] = VqueenDelta;
         NullMoveR = VnullMoveR;
         lmrMoveCount = VlmrMoveCount;
+
+        nodeLimit = VnodeLimit;
 
     }
 
@@ -413,6 +474,7 @@ public class MyBot : IChessBot
 
     public Move Think(Board board, Timer timer)
     {
+
         int selDepth = 0;
 
         // Killer moves, 1 for each depth
@@ -429,26 +491,7 @@ public class MyBot : IChessBot
         {
             string scoreTypeStr = scoreType == ScoreType.upperbound ? "upperbound " : scoreType == ScoreType.lowerbound ? "lowerbound " : "";
 
-            bool isMateScore = score < mateScore + 100 || score > -mateScore - 100;
-
-            if (!isMateScore)
-            {
-                Console.WriteLine($"info depth {globalDepth} seldepth {selDepth} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {Convert.ToInt32(1000 * nodes / ((ulong)timer.MillisecondsElapsedThisTurn + 0.001))} hashfull {1000 * nodes / (ulong)hashSize} score cp {score} {scoreTypeStr}pv {ChessChallenge.Chess.MoveUtility.GetMoveNameUCI(new(rootBestMove.RawValue))}");
-            }
-            else
-            {
-                bool sideIsMated = score < 0;
-                int mateIn;
-                if (sideIsMated)
-                {
-                    mateIn = (mateScore + score) / 2;
-                }
-                else
-                {
-                    mateIn = (-mateScore - score) / 2;
-                }
-                Console.WriteLine($"info depth {globalDepth} seldepth {selDepth} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {Convert.ToInt32(1000 * nodes / ((ulong)timer.MillisecondsElapsedThisTurn + 0.001))} hashfull {1000 * nodes / (ulong)hashSize} score mate {mateIn} {scoreTypeStr}pv {ChessChallenge.Chess.MoveUtility.GetMoveNameUCI(new(rootBestMove.RawValue))}");
-            }
+            Console.WriteLine($"info depth {globalDepth} seldepth {selDepth} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(int)(1000 * nodes / ((ulong)timer.MillisecondsElapsedThisTurn + 0.001))} hashfull {1000 * nodes / (ulong)hashSize} score cp {score} {scoreTypeStr}pv {ChessChallenge.Chess.MoveUtility.GetMoveNameUCI(new(rootBestMove.RawValue))}");
         }
 
 
@@ -514,19 +557,28 @@ public class MyBot : IChessBot
 
             Move bestMove = Move.NullMove;
 
+            Move[] captures = board.GetLegalMoves(true);
+            captures = captures.OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
+                                          : 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType).ToArray();
+            Move move;
             // TT + MVV-LVA ordering
-            foreach (Move move in board.GetLegalMoves(true).OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
-                                          : 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType))
+            for (int i = 0; i < captures.Length; i++)
             {
+                move = captures[i];
                 if (standPat + deltas[(int)move.CapturePieceType - 1] < alpha)
                 {
                     break;
                 }
 
                 nodes++;
+
+                Piece piece = board.GetPiece(move.StartSquare);
+                updateAccumulators(piece, move);
+
                 board.MakeMove(move);
                 score = -qSearch(-beta, -alpha, ply + 1);
                 board.UndoMove(move);
+                undoUpdateAccumulators(piece, move);
 
                 if (score > bestScore)
                 {
@@ -546,7 +598,7 @@ public class MyBot : IChessBot
             tt = (
                     board.ZobristKey,
                     alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
-                    Math.Clamp(bestScore, -20000, 20000),
+                    Math.Clamp(bestScore, mateScore, -mateScore),
                     0,
                     bestScore >= beta ? 0 /* lowerbound */ : alpha == oldAlpha ? 1 /* upperbound */ : 2 /* Exact */
             );
@@ -636,7 +688,7 @@ public class MyBot : IChessBot
                 if (eval >= beta) return eval;
             }
 
-            int bestScore = -30000;
+            int bestScore = -infinity;
             int moveCount = 0;
             int quietIndex = 0;
 
@@ -649,11 +701,15 @@ public class MyBot : IChessBot
             (int, int)[] quietsFromTo = new (int, int)[4096];
             Array.Fill(quietsFromTo, (-1, -1));
 
-            foreach (Move move in legals.OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
+            legals = legals.OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
                                           : move.IsCapture ? 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType
                                           : move == killers[killerIndex] ? 500_000_000_000_000_000
-                                          : history[move.StartSquare.Index, move.TargetSquare.Index]))
+                                          : history[move.StartSquare.Index, move.TargetSquare.Index]).ToArray();
+
+            Move move;
+            for (int i = 0; i < legals.Length; i++)
             {
+                move = legals[i];
                 bool isQuiet = !move.IsCapture;
 
                 if (nonPv && depth <= futilityDepth && isQuiet && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
@@ -667,6 +723,9 @@ public class MyBot : IChessBot
 
 
                 int reduction = moveCount > lmrCount && depth >= lmrDepth && isQuiet && !nodeIsCheck && nonPv ? (int)(lmrBase + Math.Log(depth) * Math.Log(moveCount) * lmrMul) : 0;
+               
+                Piece piece = board.GetPiece(move.StartSquare);
+                updateAccumulators(piece, move);
 
                 board.MakeMove(move);
 
@@ -695,6 +754,7 @@ public class MyBot : IChessBot
                 }
 
                 board.UndoMove(move);
+                undoUpdateAccumulators(piece, move);
 
                 // Updating stuff
                 if (score > bestScore)
@@ -751,7 +811,7 @@ public class MyBot : IChessBot
             tt = (
                     board.ZobristKey,
                     alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
-                    Math.Clamp(bestScore, -20000, 20000),
+                    Math.Clamp(bestScore, mateScore, -mateScore),
                     depth,
                     bestScore >= beta ? 0 /* lowerbound */ : alpha == oldAlpha ? 1 /* upperbound */ : 2 /* Exact */
             );
@@ -763,11 +823,17 @@ public class MyBot : IChessBot
 
         try
         {
+            accumulators = Encode(board.GetFenString());
+
             nodes = 0;
             int score = 0;
-            // Soft time limit
+            // Soft bound time limit
             for (; timer.MillisecondsElapsedThisTurn < timer.MillisecondsRemaining / softBoundTimeRatio; ++globalDepth)
             {
+                // Soft bound node limit
+                if (nodeLimit != 0 && nodes > (ulong)nodeLimit)
+                    break;
+
                 int alpha = -infinity;
                 int beta = infinity;
                 int delta = 0;

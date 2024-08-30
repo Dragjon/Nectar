@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "K+08CtqC6rJxp7E131QNa47QInwE42Te5NP8mciaSePqDDN7DuYegeuygFodcxlzfVMAzRYYySiUtLLxmI2gnA==",
+  "dgSpecHash": "tTYb+2Hg65XheBt9UK0yW/hxDjRHVkcsov68N6AonWAjXYXmGEx7gx/PovUBHugbHLIQ6ZMrn1dBJr5fwCyv8w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
+  "projectFilePath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dragon\\.nuget\\packages\\raylib-cs\\4.5.0.2\\raylib-cs.4.5.0.2.nupkg.sha512",
     "C:\\Users\\dragon\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",

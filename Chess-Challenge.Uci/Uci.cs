@@ -31,6 +31,7 @@ namespace Chess_Challenge.Cli
         private int _bishopDelta;
         private int _rookDelta;
         private int _queenDelta;
+        private int _nodeLimit;
 
         public Uci()
         {
@@ -59,6 +60,7 @@ namespace Chess_Challenge.Cli
             _rookDelta = MyBot.deltas[3];
             _queenDelta = MyBot.deltas[4];
             _nullMoveR = MyBot.NullMoveR;
+            _nodeLimit = MyBot.nodeLimit;
         }
 
         private void HandleUci()
@@ -84,6 +86,7 @@ namespace Chess_Challenge.Cli
             Console.WriteLine($"option name rookDelta type spin default {_rookDelta} min 0 max 2000");
             Console.WriteLine($"option name queenDelta type spin default {_queenDelta} min 0 max 5000");
             Console.WriteLine($"option name nullMoveR type spin default {_nullMoveR} min 0 max 10");
+            Console.WriteLine($"option name nodeLimit type spin default {_nodeLimit} min -1 max 1000000000");
             Console.WriteLine("uciok");
         }
 
@@ -251,8 +254,16 @@ namespace Chess_Challenge.Cli
             {
                 Console.WriteLine($"info string Threads set to 1");
             }
+            else if (optionName == "name" && words[2] == "nodeLimit" && words[3] == "value")
+            {
+                if (int.TryParse(words[4], out var nlm))
+                {
+                    _nodeLimit = nlm;
+                    Console.WriteLine($"info string nodeLimit set to {_nodeLimit}");
+                }
+            }
 
-            MyBot.setMargins(_hashSizeMB, _rfpMargin, _rfpDepth, _futilityMargin, _futilityDepth, _hardBoundTimeRatio, _softBoundTimeRatio, _aspDepth, _aspDelta, _nullMoveR, _lmrMoveCount, _iirDepth, _tempo, _pawnDelta, _knightDelta, _bishopDelta, _rookDelta, _queenDelta);
+            MyBot.setMargins(_hashSizeMB, _rfpMargin, _rfpDepth, _futilityMargin, _futilityDepth, _hardBoundTimeRatio, _softBoundTimeRatio, _aspDepth, _aspDelta, _nullMoveR, _lmrMoveCount, _iirDepth, _tempo, _pawnDelta, _knightDelta, _bishopDelta, _rookDelta, _queenDelta, _nodeLimit);
 
         }
 

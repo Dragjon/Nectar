@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {}
+    "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
+    "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
+        "projectUniqueName": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
         "projectName": "Chess-Challenge",
-        "projectPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
+        "projectPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
         "packagesPath": "C:\\Users\\dragon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\obj\\",
+        "outputPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
