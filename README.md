@@ -6,7 +6,7 @@
   src="https://github.com/user-attachments/assets/7e8514a1-19ee-46f2-a23a-7054d3e2f432">
 
 <h3>Nectar</h3>
-<b>My first NNUE chess engine</b>
+<b>Just a random bee who plays chess and collects nectar</b>
 <br>
 <br>
 
