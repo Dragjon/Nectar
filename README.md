@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.2-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.3-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -106,10 +106,10 @@ def encode_fen_to_384(fen, turn):
     return board_array
 ```
 ### Architecture 
-I trained 1 neural network for predicting WDL instead of 2 to train more data, as I could've just flipped the colors and positions of nstm. The architecture is 384x32x1 where the inputs are encoded board positions
+I trained 1 neural network for predicting WDL instead of 2 to train more data, as I could've just flipped the colors and positions of nstm. The architecture is 384x8x1 where the inputs are encoded board positions
 ```python
 model = Sequential([
-    Dense(32, input_shape=(input_shape,)),
+    Dense(8, input_shape=(input_shape,)),
     Lambda(SCReLU),
     Dense(1, activation='sigmoid')
 ])
@@ -124,6 +124,7 @@ The data I used for my training is stash [data](https://drive.google.com/file/d/
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.3 | 16.7 +/- 12.3 | Changed 32hl -> 8hl
 | 0.1.2 | 10.6 +/- 8.5 | Added history malus + overwrite killers
 | 0.1.1 | 57.7 +/- 26.4 | Quantisation
 | 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
