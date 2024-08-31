@@ -65,10 +65,42 @@ namespace Chess_Challenge.Cli
 
         private void HandleUci()
         {
-            Console.WriteLine("id name Nectar");
-            Console.WriteLine("id author Dragjon");
-            Console.WriteLine($"option name Hash type spin default {_hashSizeMB} min 1 max 1024");
-            Console.WriteLine($"option name Threads type spin default 1 min 1 max 1");
+            if (!Console.IsOutputRedirected)
+            {
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write("id ");
+                Console.ResetColor();
+                Console.WriteLine("name Nectar");
+
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write("id ");
+                Console.ResetColor();
+                Console.WriteLine("author Dragjon");
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("option ");
+                Console.ResetColor();
+                Console.WriteLine($"name Hash type spin      {_hashSizeMB,5} default {1,5} min {1024,8} max");
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("option ");
+                Console.ResetColor();
+                Console.WriteLine($"name Threads type spin   {1,5} default {1,5} min {1,8} max");
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("option ");
+                Console.ResetColor();
+                Console.WriteLine($"name nodeLimit type spin {_nodeLimit,5} default {-1,5} min {1000000,8} max");
+            }
+            else
+            {
+                Console.WriteLine("id name Nectar");
+                Console.WriteLine("id author Dragjon");
+                Console.WriteLine($"option name Hash type spin default {_hashSizeMB} min 1 max 1024");
+                Console.WriteLine($"option name Threads type spin default 1 min 1 max 1");
+                Console.WriteLine($"name nodeLimit type spin default {_nodeLimit} min -1 max 1000000");
+            }
+            /*
             Console.WriteLine($"option name rfpMargin type spin default {_rfpMargin} min 0 max 200");
             Console.WriteLine($"option name rfpDepth type spin default {_rfpDepth} min 0 max 15");
             Console.WriteLine($"option name futilityMargin type spin default {_futilityMargin} min 0 max 400");
@@ -86,7 +118,8 @@ namespace Chess_Challenge.Cli
             Console.WriteLine($"option name rookDelta type spin default {_rookDelta} min 0 max 2000");
             Console.WriteLine($"option name queenDelta type spin default {_queenDelta} min 0 max 5000");
             Console.WriteLine($"option name nullMoveR type spin default {_nullMoveR} min 0 max 10");
-            Console.WriteLine($"option name nodeLimit type spin default {_nodeLimit} min -1 max 1000000000");
+            */
+
             Console.WriteLine("uciok");
         }
 

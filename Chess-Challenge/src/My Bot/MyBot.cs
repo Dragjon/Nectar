@@ -3,11 +3,12 @@ using System.Linq;
 using System.IO;
 using ChessChallenge.API;
 using System.Diagnostics;
+
 public class MyBot : IChessBot
 {
 
     static readonly int inputLayerSize = 768;
-    static readonly int hiddenLayerSize = 22;
+    static readonly int hiddenLayerSize = 16;
     static readonly int scale = 150;
     static readonly int quantise = 255;
     static readonly int quantiseSquared = 255 * 255;
@@ -242,7 +243,7 @@ public class MyBot : IChessBot
     }
 
     public class NeuralNetwork
-    { 
+    {
         // SCReLU activation function
         private static int SCReLU(int x)
         {
@@ -265,17 +266,21 @@ public class MyBot : IChessBot
                     int* pWeights = pInputWeights + j;
 
                     int i = 0;
-                    int loopEnd = inputLayerSize - (inputLayerSize % 4);
+                    int loopEnd = inputLayerSize - (inputLayerSize % 8);
 
-                    // SIMD-like unrolling (4x at a time)
-                    for (; i < loopEnd; i += 4)
+                    // SIMD-like unrolling (8x at a time)
+                    for (; i < loopEnd; i += 8)
                     {
                         sum += pInputs[i] * pWeights[0] +
                                pInputs[i + 1] * pWeights[hiddenLayerSize] +
                                pInputs[i + 2] * pWeights[2 * hiddenLayerSize] +
-                               pInputs[i + 3] * pWeights[3 * hiddenLayerSize];
+                               pInputs[i + 3] * pWeights[3 * hiddenLayerSize] +
+                               pInputs[i + 4] * pWeights[4 * hiddenLayerSize] +
+                               pInputs[i + 5] * pWeights[5 * hiddenLayerSize] +
+                               pInputs[i + 6] * pWeights[6 * hiddenLayerSize] +
+                               pInputs[i + 7] * pWeights[7 * hiddenLayerSize];
 
-                        pWeights += 4 * hiddenLayerSize;
+                        pWeights += 8 * hiddenLayerSize;
                     }
 
                     // Handle any remaining elements
@@ -300,7 +305,6 @@ public class MyBot : IChessBot
             }
         }
 
-
         public static unsafe int PredictWithAcc()
         {
             int* hiddenLayer = stackalloc int[hiddenLayerSize]; // Use stack allocation for the hidden layer.
@@ -310,24 +314,28 @@ public class MyBot : IChessBot
             fixed (int* pInputBiases = FeatureBias)
             fixed (int* pOutputWeights = OutputWeights)
             {
-                // Process the hidden layer with loop unrolling and SIMD.
+                // Process the hidden layer with loop unrolling and SIMD-like processing.
                 for (int j = 0; j < hiddenLayerSize; j++)
                 {
                     int sum = 0;
                     int* pWeights = pInputWeights + j;
 
                     int i = 0;
-                    int loopEnd = inputLayerSize - (inputLayerSize % 4);
+                    int loopEnd = inputLayerSize - (inputLayerSize % 8);
 
-                    // SIMD-like unrolling (4x at a time)
-                    for (; i < loopEnd; i += 4)
+                    // SIMD-like unrolling (8x at a time)
+                    for (; i < loopEnd; i += 8)
                     {
                         sum += pAccumulators[i] * pWeights[0] +
                                pAccumulators[i + 1] * pWeights[hiddenLayerSize] +
                                pAccumulators[i + 2] * pWeights[2 * hiddenLayerSize] +
-                               pAccumulators[i + 3] * pWeights[3 * hiddenLayerSize];
+                               pAccumulators[i + 3] * pWeights[3 * hiddenLayerSize] +
+                               pAccumulators[i + 4] * pWeights[4 * hiddenLayerSize] +
+                               pAccumulators[i + 5] * pWeights[5 * hiddenLayerSize] +
+                               pAccumulators[i + 6] * pWeights[6 * hiddenLayerSize] +
+                               pAccumulators[i + 7] * pWeights[7 * hiddenLayerSize];
 
-                        pWeights += 4 * hiddenLayerSize;
+                        pWeights += 8 * hiddenLayerSize;
                     }
 
                     // Handle any remaining elements
@@ -351,10 +359,10 @@ public class MyBot : IChessBot
                 return (output / quantise + OutputBias) * scale / quantiseSquared;
             }
         }
-
     }
 
-    public static int Evaluate(Board board)
+
+        public static int Evaluate(Board board)
     {
         if (board.IsWhiteToMove)
         {
@@ -405,6 +413,10 @@ public class MyBot : IChessBot
     public static int[] deltas = { 90, 340, 350, 410, 930 };
 
     enum ScoreType { upperbound, lowerbound, none };
+
+    int lowerbound = 0;
+    int upperbound = 1;
+    int exact = 2;
 
     public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta, int VnodeLimit)
     {
@@ -457,7 +469,10 @@ public class MyBot : IChessBot
     public static void perft(Board board, int maxDepth)
     {
         ulong nodes;
-        Console.WriteLine($"Initiating a perft test for fen {board.GetFenString()}");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.Write($"Initiating a perft test for fen ");
+        Console.ResetColor();
+        Console.WriteLine($"{board.GetFenString()}");
 
         for (int depth = 1; depth <= maxDepth; depth++)
         {
@@ -468,7 +483,10 @@ public class MyBot : IChessBot
             double seconds = stopwatch.Elapsed.TotalSeconds;
             double nodesPerSecond = nodes / seconds;
 
-            Console.WriteLine($"info string perft depth {depth} nodes {nodes} time {(ulong)(seconds * 1000)} nps {(ulong)nodesPerSecond}");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write($"info ");
+            Console.ResetColor();
+            Console.WriteLine($"string perft {depth,4} depth {nodes,10} nodes {(ulong)(seconds * 1000),8} time {(ulong)nodesPerSecond,8} nps");
         }
     }
 
@@ -491,7 +509,76 @@ public class MyBot : IChessBot
         {
             string scoreTypeStr = scoreType == ScoreType.upperbound ? "upperbound " : scoreType == ScoreType.lowerbound ? "lowerbound " : "";
 
-            Console.WriteLine($"info depth {globalDepth} seldepth {selDepth} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(int)(1000 * nodes / ((ulong)timer.MillisecondsElapsedThisTurn + 0.001))} hashfull {1000 * nodes / (ulong)hashSize} score cp {score} {scoreTypeStr}pv {ChessChallenge.Chess.MoveUtility.GetMoveNameUCI(new(rootBestMove.RawValue))}");
+
+            if (!Console.IsOutputRedirected)
+            {
+                // Pretty printing with alignment and colored variables
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write("info ");
+                Console.ResetColor();
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write($"{globalDepth,4} ");
+                Console.ResetColor();
+                Console.Write("iteration ");
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write($"{selDepth,4} ");
+                Console.ResetColor();
+                Console.Write("seldepth ");
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write($"{timer.MillisecondsElapsedThisTurn,8} ");
+                Console.ResetColor();
+                Console.Write("ms ");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"{nodes,10} ");
+                Console.ResetColor();
+                Console.Write("nodes ");
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write($"{(int)(1000 * nodes / ((ulong)timer.MillisecondsElapsedThisTurn + 0.001)),8} ");
+                Console.ResetColor();
+                Console.Write("nps ");
+
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write($"{ 100 * nodes / (ulong)hashSize,6} ");
+                Console.ResetColor();
+                Console.Write("% hashfull ");
+
+                if (score < -30)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                else if (score > 30)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                }
+
+                Console.Write($"{((score >= 0 ? "+" : "") + ((float)score / 100).ToString("0.00")),6} ");
+                Console.ResetColor();
+                Console.Write("score ");
+
+
+                Console.Write($"{scoreTypeStr}pv ");
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write($"{ChessChallenge.Chess.MoveUtility.GetMoveNameUCI(new(rootBestMove.RawValue))}");
+                Console.ResetColor();
+
+                Console.WriteLine();
+            }
+
+            else
+            {
+                // Standard printing for non-terminal
+                Console.WriteLine($"info depth {globalDepth} seldepth {selDepth} time {timer.MillisecondsElapsedThisTurn} nodes {nodes} nps {(int)(1000 * nodes / ((ulong)timer.MillisecondsElapsedThisTurn + 0.001))} hashfull {1000 * nodes / (ulong)hashSize} score cp {score} {scoreTypeStr}pv {ChessChallenge.Chess.MoveUtility.GetMoveNameUCI(new(rootBestMove.RawValue))}");
+            }
         }
 
 
@@ -538,14 +625,19 @@ public class MyBot : IChessBot
 
             if (ttHit)
             {
-                if (ttBound == 0)
-                    if (score >= beta)
-                        return score;
-                    else if (ttBound == 1)
-                        if (score <= alpha)
-                            return score;
-                        else
-                            return score;
+                if (ttBound == lowerbound && score >= beta)
+                {
+                    return score;
+                }
+
+                else if (ttBound == upperbound && score <= alpha)
+                {
+                    return score;
+                }
+                else if (ttBound == exact)
+                {
+                    return score;
+                }
             }
 
             // Standing Pat Pruning
@@ -600,7 +692,7 @@ public class MyBot : IChessBot
                     alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
                     Math.Clamp(bestScore, mateScore, -mateScore),
                     0,
-                    bestScore >= beta ? 0 /* lowerbound */ : alpha == oldAlpha ? 1 /* upperbound */ : 2 /* Exact */
+                    bestScore >= beta ? lowerbound /* lowerbound */ : alpha == oldAlpha ? upperbound /* upperbound */ : exact /* Exact */
             );
             return bestScore;
         }
@@ -650,14 +742,19 @@ public class MyBot : IChessBot
             {
                 if (ttDepth >= depth)
                 {
-                    if (ttBound == 0)
-                        if (score >= beta)
-                            return score;
-                        else if (ttBound == 1)
-                            if (score <= alpha)
-                                return score;
-                            else
-                                return score;
+                    if (ttBound == lowerbound && score >= beta)
+                    {
+                        return score;
+                    }
+
+                    else if (ttBound == upperbound && score <= alpha)
+                    {
+                        return score;
+                    }
+                    else if (ttBound == exact)
+                    {
+                        return score;
+                    }
                 }
             }
             else if (!nonPv && depth > iirDepth)
@@ -813,7 +910,7 @@ public class MyBot : IChessBot
                     alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
                     Math.Clamp(bestScore, mateScore, -mateScore),
                     depth,
-                    bestScore >= beta ? 0 /* lowerbound */ : alpha == oldAlpha ? 1 /* upperbound */ : 2 /* Exact */
+                    bestScore >= beta ? lowerbound /* lowerbound */ : alpha == oldAlpha ? upperbound /* upperbound */ : exact /* Exact */
             );
 
             return bestScore;
