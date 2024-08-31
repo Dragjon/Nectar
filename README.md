@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.4-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.5-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -94,7 +94,7 @@ def encode_fen(fen):
 A 768->N->1 network in white's POV
 ```python
 model = Sequential([
-    Dense(22, input_shape=(input_shape,)),
+    Dense(16, input_shape=(input_shape,)),
     Lambda(SCReLU),
     Dense(1, activation='sigmoid')
 ])
@@ -110,6 +110,7 @@ def SCReLU(x):
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.5 | 34.8 +/- 19.7 | Changed to 16 hl
 | 0.1.4 | 51.0 +/- 24.6 | Changed input shape and num hidden layers, Efficient updates, SIMD, Hand-retuning values, Refactors
 | 0.1.3 | 16.7 +/- 12.3 | Changed 32hl -> 8hl
 | 0.1.2 | 10.6 +/- 8.5 | Added history malus + overwrite killers
