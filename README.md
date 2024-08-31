@@ -20,6 +20,9 @@
 
 ## Overview
 My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me! You can track my progress [here](https://sprt.free.nf)
+### Fancy interface (if opened in a terminal window)
+![Screenshot 2024-08-30 235217](https://github.com/user-attachments/assets/7543c5e3-5696-4df7-a834-5ad411dcc658)
+
 ## Playing
 ### Locally
 You can download the precompiled executables for windows [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
