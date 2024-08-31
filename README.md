@@ -142,6 +142,7 @@ Elo: ~2000
 ## Credits
 - Sebastian Lague (For the whole chess framework)
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
+- ChatGPT (The SIMD optimisations)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
 - Gediminas (For the UCI interface for Sebastian Lagues's framework)
