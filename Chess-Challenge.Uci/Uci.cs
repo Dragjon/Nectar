@@ -42,6 +42,7 @@ namespace Chess_Challenge.Cli
         {
             _bot = new MyBot();
             _board = Board.CreateBoardFromFEN(StartposFen);
+            MyBot.resetNodes();
             _hashSizeMB = MyBot.hashSizeMB;
             _rfpMargin = MyBot.rfpMargin;
             _rfpDepth = MyBot.rfpDepth;
@@ -98,7 +99,7 @@ namespace Chess_Challenge.Cli
                 Console.WriteLine("id author Dragjon");
                 Console.WriteLine($"option name Hash type spin default {_hashSizeMB} min 1 max 1024");
                 Console.WriteLine($"option name Threads type spin default 1 min 1 max 1");
-                Console.WriteLine($"name nodeLimit type spin default {_nodeLimit} min -1 max 1000000");
+                Console.WriteLine($"name nodeLimit type spin default {_nodeLimit} min 0 max 1000000");
             }
             /*
             Console.WriteLine($"option name rfpMargin type spin default {_rfpMargin} min 0 max 200");
