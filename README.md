@@ -20,6 +20,9 @@
 
 ## Overview
 My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me! You can track my progress [here](https://sprt.free.nf)
+### Fancy interface (if opened in a terminal window)
+![Screenshot 2024-08-30 235217](https://github.com/user-attachments/assets/7543c5e3-5696-4df7-a834-5ad411dcc658)
+
 ## Playing
 ### Locally
 You can download the precompiled executables for windows [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
@@ -40,6 +43,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - QSearch standing pat pruning
 - QSearch delta pruning
 - Transposition table cutoffs
+- Mate Distancing pruning
 ### Reductions/Extensions
 - Late moves reduction (Log formula)
 - Check extensions
@@ -128,17 +132,18 @@ def SCReLU(x):
 ## Rating
 ```
 Rank Name                          Elo     +/-   Games   Score    Draw
-   1 snowy-v0.2                    270     154      43   82.6%    2.3%
-   2 CDrill_1800_Build_4           132     105      44   68.2%   13.6%
-   3 Napolean-v1.4.0                 0     100      43   50.0%   11.6%
-   4 shallowblue-v2.0.0           -180     123      44   26.1%    2.3%
-   5 NectarV0.1.0                 -202     118      44   23.9%   11.4%
+   1 snowy-v0.2                    211      70     120   77.1%   10.8%
+   2 Napolean-v1.4.0                35      59     120   55.0%   13.3%
+   3 CDrill_1800_Build_4             0      59     120   50.0%   10.0%
+   4 NectarV0.1.5                  -53      60     120   42.5%   11.7%
+   5 shallowblue-v2.0.0           -187      70     120   25.4%    5.8%
 
-Approx: 1595 - 1848
+Elo: ~2000
 ```
 ## Credits
 - Sebastian Lague (For the whole chess framework)
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
+- ChatGPT (The SIMD optimisations)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
 - Gediminas (For the UCI interface for Sebastian Lagues's framework)
