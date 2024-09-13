@@ -20,7 +20,7 @@
 
 ## Overview
 My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me! You can track my progress [here](https://sprt.free.nf)
-### Fancy interface (if opened in a terminal window)
+### Fancy interface 
 ![Screenshot 2024-08-30 235217](https://github.com/user-attachments/assets/7543c5e3-5696-4df7-a834-5ad411dcc658)
 
 ## Playing
