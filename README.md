@@ -112,7 +112,7 @@ def SCReLU(x):
     return tf.square(tf.clip_by_value(x, 0, 1))
 ```
 ### Training
-* <= V0.1.7 : Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture using version V0.1.3
+* <= V0.1.7 : (bee-net) Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture using version V0.1.3
 * <= V0.1.2 : The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
