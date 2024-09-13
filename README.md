@@ -35,6 +35,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - Principal variation search (triple PVS)
 - Quiescence search
 - Efficient updates (UE)
+- Tempo
 ### Pruning
 - Beta pruning
 - Reverse futility pruning
