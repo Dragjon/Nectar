@@ -1,0 +1,9 @@
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\Chess-Challenge.Cli.pdb
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\src\Evil Bot\EvilBot.cs
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\src\My Bot\MyBot.cs
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\resources\Fonts\sdf.fs
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\Chess-Challenge.runtimeconfig.json
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\resources\Fens.txt
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\resources\Pieces.png
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\Chess-Challenge.pdb
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\bin\Release\net6.0\win-x64\publish\Chess-Challenge.Cli.exe

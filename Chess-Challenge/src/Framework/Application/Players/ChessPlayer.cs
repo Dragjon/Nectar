@@ -1,5 +1,5 @@
-﻿using ChessChallenge.API;
-using System;
+﻿using System;
+using ChessChallenge.API;
 
 namespace ChessChallenge.Application
 {

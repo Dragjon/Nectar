@@ -1,7 +1,6 @@
-﻿using ChessChallenge.API;
-using ChessChallenge.Application.APIHelpers;
+﻿using System;
+using ChessChallenge.API;
 using ChessChallenge.Chess;
-using System;
 
 namespace ChessChallenge.Application
 {
@@ -251,7 +250,7 @@ namespace ChessChallenge.Application
             Assert(!boardAPI.IsRepeatedPosition(), "Should not be repetition");
 
             // -- Repetition of position in actual game occuring in search --
-            
+
             board.LoadPosition(fen);
             board.MakeMove(MoveUtility.GetMoveFromUCIName("e1e2", board), inSearch: false); // Qe2
             board.MakeMove(MoveUtility.GetMoveFromUCIName("d8c8", board), inSearch: false); // ...Kc8
@@ -272,10 +271,10 @@ namespace ChessChallenge.Application
             Assert(!boardAPI.IsRepeatedPosition(), "Should not be repetition");
             boardAPI.MakeMove(moveKd6);
             Assert(boardAPI.IsRepeatedPosition(), "Should be repetition");
-            
+
             // -- Same test but purely in search --
             board.LoadPosition(fen);
-            
+
             boardAPI = new(board);
             Make("e1e2"); // Qe2
             Make("d8c8"); // ...Kc8
@@ -688,13 +687,13 @@ namespace ChessChallenge.Application
                 Console.WriteLine("Test3 time: " + sw.ElapsedMilliseconds + " ms");
                 bool passed = nodes == 4085603 && numCaptures == 757163 && numChecks == 25523 && numMates == 43;
                 Assert(passed, "Test3 failed");
-                
+
 
             }
 
             void Search(int depth, API.Move prevMove)
             {
-              
+
                 Span<API.Move> moveSpan = stackalloc API.Move[256];
                 board.GetLegalMovesNonAlloc(ref moveSpan);
 
@@ -717,7 +716,7 @@ namespace ChessChallenge.Application
                     return;
                 }
 
-               
+
                 foreach (var move in moveSpan)
                 {
                     board.MakeMove(move);

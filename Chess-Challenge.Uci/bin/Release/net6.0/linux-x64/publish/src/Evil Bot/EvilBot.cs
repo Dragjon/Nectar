@@ -1,5 +1,5 @@
-﻿using ChessChallenge.API;
-using System.Linq;
+﻿using System.Linq;
+using ChessChallenge.API;
 
 namespace ChessChallenge.Example
 {

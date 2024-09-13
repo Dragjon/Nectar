@@ -1,7 +1,7 @@
-﻿using Raylib_cs;
-using System.Numerics;
-using System;
+﻿using System;
 using System.IO;
+using System.Numerics;
+using Raylib_cs;
 
 namespace ChessChallenge.Application
 {

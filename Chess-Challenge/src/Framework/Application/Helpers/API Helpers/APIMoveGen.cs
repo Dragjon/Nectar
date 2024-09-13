@@ -1,5 +1,5 @@
-﻿using ChessChallenge.Chess;
-using System;
+﻿using System;
+using ChessChallenge.Chess;
 using static ChessChallenge.Chess.PrecomputedMoveData;
 
 namespace ChessChallenge.Application.APIHelpers

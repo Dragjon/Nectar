@@ -1,9 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
 
 namespace ChessChallenge.Application
 {
@@ -21,7 +21,7 @@ namespace ChessChallenge.Application
             SyntaxKind.CommaToken,
             SyntaxKind.ReadOnlyKeyword,
             // only count open brace since I want to count the pair as a single token
-            SyntaxKind.CloseBraceToken, 
+            SyntaxKind.CloseBraceToken,
             SyntaxKind.CloseBracketToken,
             SyntaxKind.CloseParenToken
         });
@@ -39,7 +39,7 @@ namespace ChessChallenge.Application
             // Debug token count (tokens explicitly excluded by user for testing purposes)
             var ignoreInstructions = root.DescendantTrivia().Where(t => IsIgnoreTokenInstruction(t));
             int debugTokenCount = 0;
-            foreach(var ignore in ignoreInstructions)
+            foreach (var ignore in ignoreInstructions)
             {
                 int lineNumber = lines.GetLineFromPosition(ignore.SpanStart).LineNumber;
                 var debugTokens = allTokens.Where(t => lines.GetLineFromPosition(t.SpanStart).LineNumber == lineNumber);

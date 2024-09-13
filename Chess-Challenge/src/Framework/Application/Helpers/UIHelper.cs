@@ -1,6 +1,6 @@
-﻿using Raylib_cs;
-using System;
+﻿using System;
 using System.Numerics;
+using Raylib_cs;
 using static ChessChallenge.Application.FileHelper;
 
 namespace ChessChallenge.Application

@@ -4,7 +4,7 @@
     "includedFrameworks": [
       {
         "name": "Microsoft.NETCore.App",
-        "version": "6.0.24"
+        "version": "6.0.33"
       }
     ],
     "configProperties": {
@@ -17,8 +17,8 @@
       "System.Runtime.InteropServices.EnableCppCLIHostActivation": false,
       "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
       "System.StartupHookProvider.IsSupported": false,
-      "System.Threading.Thread.EnableAutoreleasePool": false,
-      "System.Text.Encoding.EnableUnsafeUTF7Encoding": false
+      "System.Text.Encoding.EnableUnsafeUTF7Encoding": false,
+      "System.Threading.Thread.EnableAutoreleasePool": false
     }
   }
 }

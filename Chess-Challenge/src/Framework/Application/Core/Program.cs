@@ -1,7 +1,7 @@
-﻿using Raylib_cs;
-using System.IO;
+﻿using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using Raylib_cs;
 
 namespace ChessChallenge.Application
 {
@@ -103,7 +103,7 @@ namespace ChessChallenge.Application
             File.WriteAllText(FileHelper.PrefsFilePath, isBigWindow ? "1" : "0");
         }
 
-      
+
 
     }
 

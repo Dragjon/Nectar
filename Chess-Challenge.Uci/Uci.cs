@@ -55,11 +55,11 @@ namespace Chess_Challenge.Cli
             _tempo = MyBot.tempo;
             _lmrMoveCount = MyBot.lmrMoveCount;
             _iirDepth = MyBot.iirDepth;
-            _pawnDelta = MyBot.deltas[0];
-            _knightDelta = MyBot.deltas[1];
-            _bishopDelta = MyBot.deltas[2];
-            _rookDelta = MyBot.deltas[3];
-            _queenDelta = MyBot.deltas[4];
+            _pawnDelta = MyBot.deltas[1];
+            _knightDelta = MyBot.deltas[2];
+            _bishopDelta = MyBot.deltas[3];
+            _rookDelta = MyBot.deltas[4];
+            _queenDelta = MyBot.deltas[5];
             _nullMoveR = MyBot.NullMoveR;
             _nodeLimit = MyBot.nodeLimit;
         }

@@ -28,7 +28,7 @@ namespace ChessChallenge.API
         /// Amount of time left on the clock for the other player (in milliseconds)
         /// </summary>
         public readonly int OpponentMillisecondsRemaining;
-        
+
         readonly System.Diagnostics.Stopwatch sw;
         readonly int millisRemainingAtStartOfTurn;
 

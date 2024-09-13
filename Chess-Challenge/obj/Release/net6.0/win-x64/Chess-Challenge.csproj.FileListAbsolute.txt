@@ -228,7 +228,6 @@ C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\dbgshi
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\hostfxr.dll
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\hostpolicy.dll
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\mscordaccore.dll
-C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\mscordaccore_amd64_amd64_6.0.2423.51814.dll
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\mscordbi.dll
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\mscorrc.dll
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\bin\Release\net6.0\win-x64\msquic.dll
@@ -240,9 +239,11 @@ C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.AssemblyInfoInputs.cache
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.AssemblyInfo.cs
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.csproj.CoreCompileInputs.cache
-C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.csproj.CopyComplete
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.dll
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\refint\Chess-Challenge.dll
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.pdb
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.genruntimeconfig.cache
 C:\Users\dragon\Desktop\nectar\Chess-Challenge\obj\Release\net6.0\win-x64\ref\Chess-Challenge.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\win-x64\mscordaccore_amd64_amd64_6.0.3324.36610.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Challenge.sourcelink.json
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\obj\Release\net6.0\win-x64\Chess-Ch.033AC9B4.Up2Date

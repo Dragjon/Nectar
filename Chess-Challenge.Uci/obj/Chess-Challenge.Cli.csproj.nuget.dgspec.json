@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj": {}
+    "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj": {
+    "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
+        "projectUniqueName": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
         "projectName": "Chess-Challenge.Cli",
-        "projectPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
+        "projectPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
         "packagesPath": "C:\\Users\\dragon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\obj\\",
+        "outputPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -26,15 +26,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
-                "projectPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj"
+              "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
+                "projectPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj"
               }
             }
           }
@@ -43,11 +42,30 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.NET.ILLink.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.100-1.23401.1, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.100-1.23401.1, )",
+              "autoReferenced": true
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -61,16 +79,16 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-              "version": "[6.0.24, 6.0.24]"
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[6.0.33, 6.0.33]"
             },
             {
-              "name": "Microsoft.NETCore.App.Runtime.win-x64",
-              "version": "[6.0.24, 6.0.24]"
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[6.0.33, 6.0.33]"
             },
             {
-              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-              "version": "[6.0.24, 6.0.24]"
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "[6.0.33, 6.0.33]"
             }
           ],
           "frameworkReferences": {
@@ -78,23 +96,23 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
-        "win-x64": {
+        "linux-x64": {
           "#import": []
         }
       }
     },
-    "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
+    "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
+        "projectUniqueName": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
         "projectName": "Chess-Challenge",
-        "projectPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
+        "projectPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
         "packagesPath": "C:\\Users\\dragon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\obj\\",
+        "outputPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -109,7 +127,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -122,12 +139,29 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.NET.ILLink.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.100-1.23401.1, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.100-1.23401.1, )",
+              "autoReferenced": true
+            },
             "Raylib-cs": {
               "target": "Package",
               "version": "[4.5.0.2, )"
@@ -146,16 +180,16 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-              "version": "[6.0.24, 6.0.24]"
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[6.0.33, 6.0.33]"
             },
             {
-              "name": "Microsoft.NETCore.App.Runtime.win-x64",
-              "version": "[6.0.24, 6.0.24]"
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[6.0.33, 6.0.33]"
             },
             {
-              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-              "version": "[6.0.24, 6.0.24]"
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "[6.0.33, 6.0.33]"
             }
           ],
           "frameworkReferences": {
@@ -163,11 +197,11 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
-        "win-x64": {
+        "linux-x64": {
           "#import": []
         }
       }

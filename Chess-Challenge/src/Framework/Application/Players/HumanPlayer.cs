@@ -1,6 +1,6 @@
-﻿using ChessChallenge.Chess;
+﻿using System.Numerics;
+using ChessChallenge.Chess;
 using Raylib_cs;
-using System.Numerics;
 
 namespace ChessChallenge.Application
 {

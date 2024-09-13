@@ -1,15 +1,15 @@
-﻿using ChessChallenge.Chess;
-using ChessChallenge.Example;
-using Raylib_cs;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static ChessChallenge.Application.Settings;
+using ChessChallenge.Chess;
+using ChessChallenge.Example;
+using Raylib_cs;
 using static ChessChallenge.Application.ConsoleHelper;
+using static ChessChallenge.Application.Settings;
 
 namespace ChessChallenge.Application
 {
@@ -28,7 +28,7 @@ namespace ChessChallenge.Application
         bool isPlaying;
         Board board;
         public ChessPlayer PlayerWhite { get; private set; }
-        public ChessPlayer PlayerBlack {get;private set;}
+        public ChessPlayer PlayerBlack { get; private set; }
 
         float lastMoveMadeTime;
         bool isWaitingToPlayMove;
@@ -40,7 +40,7 @@ namespace ChessChallenge.Application
         readonly string[] botMatchStartFens;
         int botMatchGameIndex;
         public BotMatchStats BotStatsA { get; private set; }
-        public BotMatchStats BotStatsB {get;private set;}
+        public BotMatchStats BotStatsB { get; private set; }
         bool botAPlaysWhite;
 
 

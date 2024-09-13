@@ -1,17 +1,17 @@
-﻿using ChessChallenge.Chess;
-using Raylib_cs;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.IO;
-using static ChessChallenge.Application.UIHelper;
+using System.Numerics;
 using ChessChallenge.Application.APIHelpers;
+using ChessChallenge.Chess;
+using Raylib_cs;
+using static ChessChallenge.Application.UIHelper;
 
 namespace ChessChallenge.Application
 {
     public class BoardUI
     {
-      
+
         // Board settings
         const int squareSize = 100;
         const double moveAnimDuration = 0.15;
@@ -203,7 +203,7 @@ namespace ChessChallenge.Application
 
             DrawBorder();
             ForEachSquare(DrawSquare);
-            
+
             if (isAnimatingMove)
             {
                 UpdateMoveAnimation(animT);
@@ -364,7 +364,7 @@ namespace ChessChallenge.Application
         void DrawBitboardDebugOverlaySquare(int file, int rank)
         {
             ulong bitboard = BitboardDebugState.BitboardToVisualize;
-            bool isSet = BitBoardUtility.ContainsSquare(bitboard, new Coord(file,rank).SquareIndex);
+            bool isSet = BitBoardUtility.ContainsSquare(bitboard, new Coord(file, rank).SquareIndex);
             Color col = isSet ? bitboardColONE : bitboardColZERO;
 
             Vector2 squarePos = GetSquarePos(file, rank, whitePerspective);

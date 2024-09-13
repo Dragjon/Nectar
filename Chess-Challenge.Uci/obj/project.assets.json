@@ -2,6 +2,18 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "Microsoft.NET.ILLink.Analyzers/7.0.100-1.23401.1": {
+        "type": "package",
+        "build": {
+          "build/Microsoft.NET.ILLink.Analyzers.props": {}
+        }
+      },
+      "Microsoft.NET.ILLink.Tasks/7.0.100-1.23401.1": {
+        "type": "package",
+        "build": {
+          "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
       "Raylib-cs/4.5.0.2": {
         "type": "package",
         "dependencies": {
@@ -63,7 +75,19 @@
         }
       }
     },
-    "net6.0/win-x64": {
+    "net6.0/linux-x64": {
+      "Microsoft.NET.ILLink.Analyzers/7.0.100-1.23401.1": {
+        "type": "package",
+        "build": {
+          "build/Microsoft.NET.ILLink.Analyzers.props": {}
+        }
+      },
+      "Microsoft.NET.ILLink.Tasks/7.0.100-1.23401.1": {
+        "type": "package",
+        "build": {
+          "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
       "Raylib-cs/4.5.0.2": {
         "type": "package",
         "dependencies": {
@@ -80,7 +104,7 @@
           }
         },
         "native": {
-          "runtimes/win-x64/native/raylib.dll": {}
+          "runtimes/linux-x64/native/libraylib.so": {}
         }
       },
       "System.Numerics.Vectors/4.5.0": {
@@ -108,6 +132,53 @@
     }
   },
   "libraries": {
+    "Microsoft.NET.ILLink.Analyzers/7.0.100-1.23401.1": {
+      "sha512": "XirkjOLc5Vc3HsXRc2Z6ZbQv6l0RvWgJa/31w7XqZ914MoSi3H3OCNRMWFw7H2EYfsnKbokFfhCcysAmUcEOgw==",
+      "type": "package",
+      "path": "microsoft.net.illink.analyzers/7.0.100-1.23401.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "analyzers/dotnet/cs/ILLink.CodeFixProvider.dll",
+        "analyzers/dotnet/cs/ILLink.RoslynAnalyzer.dll",
+        "build/Microsoft.NET.ILLink.Analyzers.props",
+        "microsoft.net.illink.analyzers.7.0.100-1.23401.1.nupkg.sha512",
+        "microsoft.net.illink.analyzers.nuspec"
+      ]
+    },
+    "Microsoft.NET.ILLink.Tasks/7.0.100-1.23401.1": {
+      "sha512": "mI6vCdPEhluLtMn/GV0texEWg5oAPQWCCE4LWspM+Bmy75Nd4EQsziQXrdOFqNeSBQMrxDX9C/O5Xi3kpKSMIw==",
+      "type": "package",
+      "path": "microsoft.net.illink.tasks/7.0.100-1.23401.1",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "Sdk/Sdk.props",
+        "build/6.0_suppressions.xml",
+        "build/Microsoft.NET.ILLink.Tasks.props",
+        "build/Microsoft.NET.ILLink.targets",
+        "microsoft.net.illink.tasks.7.0.100-1.23401.1.nupkg.sha512",
+        "microsoft.net.illink.tasks.nuspec",
+        "tools/net472/ILLink.Tasks.dll",
+        "tools/net472/Mono.Cecil.dll",
+        "tools/net472/System.Buffers.dll",
+        "tools/net472/System.Collections.Immutable.dll",
+        "tools/net472/System.Memory.dll",
+        "tools/net472/System.Numerics.Vectors.dll",
+        "tools/net472/System.Reflection.Metadata.dll",
+        "tools/net472/System.Runtime.CompilerServices.Unsafe.dll",
+        "tools/net7.0/ILLink.Tasks.deps.json",
+        "tools/net7.0/ILLink.Tasks.dll",
+        "tools/net7.0/Mono.Cecil.Pdb.dll",
+        "tools/net7.0/Mono.Cecil.dll",
+        "tools/net7.0/illink.deps.json",
+        "tools/net7.0/illink.dll",
+        "tools/net7.0/illink.runtimeconfig.json"
+      ]
+    },
     "Raylib-cs/4.5.0.2": {
       "sha512": "CeMdyV6CMJp2ZOPBVaSjQ5kk1O2SwjoHde1/WRBSdRXG9g3Sw+bS/fSjXwjyK729DtUYLVYk4pg1AMH7XPdHcQ==",
       "type": "package",
@@ -185,7 +256,9 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Chess-Challenge >= 1.0.0"
+      "Chess-Challenge >= 1.0.0",
+      "Microsoft.NET.ILLink.Analyzers >= 7.0.100-1.23401.1",
+      "Microsoft.NET.ILLink.Tasks >= 7.0.100-1.23401.1"
     ]
   },
   "packageFolders": {
@@ -195,11 +268,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
+      "projectUniqueName": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
       "projectName": "Chess-Challenge.Cli",
-      "projectPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
+      "projectPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj",
       "packagesPath": "C:\\Users\\dragon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge.Uci\\obj\\",
+      "outputPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -214,15 +287,14 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
-              "projectPath": "C:\\Users\\dragon\\desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj"
+            "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj": {
+              "projectPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj"
             }
           }
         }
@@ -231,11 +303,30 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
       "net6.0": {
         "targetAlias": "net6.0",
+        "dependencies": {
+          "Microsoft.NET.ILLink.Analyzers": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[7.0.100-1.23401.1, )",
+            "autoReferenced": true
+          },
+          "Microsoft.NET.ILLink.Tasks": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[7.0.100-1.23401.1, )",
+            "autoReferenced": true
+          }
+        },
         "imports": [
           "net461",
           "net462",
@@ -249,16 +340,16 @@
         "warn": true,
         "downloadDependencies": [
           {
-            "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-            "version": "[6.0.24, 6.0.24]"
+            "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+            "version": "[6.0.33, 6.0.33]"
           },
           {
-            "name": "Microsoft.NETCore.App.Runtime.win-x64",
-            "version": "[6.0.24, 6.0.24]"
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
+            "version": "[6.0.33, 6.0.33]"
           },
           {
-            "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-            "version": "[6.0.24, 6.0.24]"
+            "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+            "version": "[6.0.33, 6.0.33]"
           }
         ],
         "frameworkReferences": {
@@ -266,11 +357,11 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {
-      "win-x64": {
+      "linux-x64": {
         "#import": []
       }
     }

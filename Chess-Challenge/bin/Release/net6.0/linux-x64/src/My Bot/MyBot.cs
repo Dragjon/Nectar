@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.IO;
-using ChessChallenge.API;
 using System.Diagnostics;
-using System.Reflection;
+using System.IO;
+using System.Linq;
+using ChessChallenge.API;
 
 public class MyBot : IChessBot
 {
@@ -80,8 +79,9 @@ public class MyBot : IChessBot
         int rowIdx = 0;
         int colIdx = 0;
 
-        foreach (var character in rows)
+        for (int i = 0; i < rows.Length; i++)
         {
+            var character = rows[i];
             if (character == '/')
             {
                 rowIdx++;
@@ -368,7 +368,6 @@ public class MyBot : IChessBot
         return board.IsWhiteToMove ? NeuralNetwork.PredictWithAcc() + tempo : -NeuralNetwork.PredictWithAcc() + tempo;
     }
 
-
     static readonly float ttSlotSizeMB = 0.000024F;
     public static int hashSizeMB = 1024;
     static int hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
@@ -399,12 +398,11 @@ public class MyBot : IChessBot
     public static int hardBoundTimeRatio = 1;
     public static int softBoundTimeRatio = 20;
     public static int iirDepth = 3;
-    public static int lmrCount = 5;
     public static int lmrDepth = 2;
     public static float lmrBase = 0.75F;
     public static float lmrMul = 0.4F;
     public static int tempo = 14;
-    public static int[] deltas = { 90, 340, 350, 410, 930 };
+    public static int[] deltas = { 0, 90, 340, 350, 410, 930 };
 
     public static ulong totalNodes = 0;
 
@@ -436,11 +434,11 @@ public class MyBot : IChessBot
         aspDelta = VaspDelta;
         iirDepth = ViirDepth;
         tempo = Vtempo;
-        deltas[0] = VpawnDelta;
-        deltas[1] = VknightDelta;
-        deltas[2] = VbishopDelta;
-        deltas[3] = VrookDelta;
-        deltas[4] = VqueenDelta;
+        deltas[1] = VpawnDelta;
+        deltas[2] = VknightDelta;
+        deltas[3] = VbishopDelta;
+        deltas[4] = VrookDelta;
+        deltas[5] = VqueenDelta;
         NullMoveR = VnullMoveR;
         lmrMoveCount = VlmrMoveCount;
 
@@ -457,8 +455,9 @@ public class MyBot : IChessBot
             return 1;
 
         Move[] legals = board.GetLegalMoves();
-        foreach (var move in legals)
+        for (int i = 0; i < legals.Length; i++)
         {
+            Move move = legals[i];
             board.MakeMove(move);
             nodes += perftD(board, depth - 1);
             board.UndoMove(move);
@@ -544,7 +543,7 @@ public class MyBot : IChessBot
                 Console.Write("nps ");
 
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.Write($"{ 100 * nodes / (ulong)hashSize,6} ");
+                Console.Write($"{100 * nodes / (ulong)hashSize,6} ");
                 Console.ResetColor();
                 Console.Write("% hashfull ");
 
@@ -584,118 +583,107 @@ public class MyBot : IChessBot
 
 
 
-        // Quiescence Search
         int qSearch(int alpha, int beta, int ply)
         {
-            // Hard bound time management
+            // Step 1: Hard bound time management
             if (globalDepth > 1 && timer.MillisecondsElapsedThisTurn >= timer.MillisecondsRemaining / hardBoundTimeRatio) throw null;
 
-            selDepth = Math.Max(ply, selDepth);
+            // Step 2: Update selective depth
+            if (ply > selDepth) selDepth = ply;
 
-            int mating_value = -mateScore - ply;
+            // Step 3: Check if position is draw or checkmate
+            if (board.IsDraw() || board.IsInCheckmate()) return 0;
 
-            if (mating_value < beta)
-            {
-                beta = mating_value;
-                if (alpha >= mating_value) return mating_value;
-            }
-
-            mating_value = mateScore + ply;
-
-            if (mating_value > alpha)
-            {
-                alpha = mating_value;
-                if (beta <= mating_value) return mating_value;
-            }
-
-            int standPat = Evaluate(board);
-
-            int bestScore = standPat;
-
-            // Terminal nodes
-            if (board.IsInCheckmate())
-                return mateScore + ply;
-            if (board.IsDraw())
-                return 0;
-
+            // Step 4: TT Cutoffs
             ref var tt = ref transpositionTable[board.ZobristKey & (ulong)(hashSize - 1)];
             var (ttHash, ttMoveRaw, score, ttDepth, ttBound) = tt;
-
             bool ttHit = ttHash == board.ZobristKey;
             int oldAlpha = alpha;
 
             if (ttHit)
             {
-                if (ttBound == lowerbound && score >= beta)
-                {
-                    return score;
-                }
-
-                else if (ttBound == upperbound && score <= alpha)
-                {
-                    return score;
-                }
-                else if (ttBound == exact)
+                if ((ttBound == lowerbound && score >= beta) ||
+                    (ttBound == upperbound && score <= alpha) ||
+                    (ttBound == exact))
                 {
                     return score;
                 }
             }
 
-            // Standing Pat Pruning
-            if (standPat >= beta)
-                return standPat;
+            int standPat = Evaluate(board);
+            int bestScore = standPat;
 
-            if (alpha < standPat)
-                alpha = standPat;
+            // Step 5: Standing Pat Pruning
+            if (standPat >= beta) return standPat;
+            if (alpha < standPat) alpha = standPat;
 
             Move bestMove = Move.NullMove;
 
+            // Step 6: Move ordering
+            // TT + MVV-LVA
             Move[] captures = board.GetLegalMoves(true);
-            captures = captures.OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
-                                          : 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType).ToArray();
-            Move move;
-            // TT + MVV-LVA ordering
+            int[] orderKeys = new int[captures.Length];
             for (int i = 0; i < captures.Length; i++)
             {
-                move = captures[i];
-                if (standPat + deltas[(int)move.CapturePieceType - 1] < alpha)
+                var ormove = captures[i];
+                int orderKey = 0;
+
+                if (ttHit && ormove.RawValue == ttMoveRaw)
                 {
-                    break;
+                    orderKey = 100_000_000;
                 }
+                else
+                {
+                    orderKey = 1_000_000 * (int)ormove.CapturePieceType - (int)ormove.MovePieceType;
+                }
+                orderKeys[i] = orderKey;
+            }
+
+            Array.Sort(orderKeys, captures);
+
+            // Main loop
+            for (int i = captures.Length - 1; i >= 0; i--)
+            {
+                Move move = captures[i];
+
+                // Step 7: Delta pruning
+                if (standPat + deltas[(int)move.CapturePieceType] < alpha) break;
 
                 nodes++;
                 totalNodes++;
 
                 Piece piece = board.GetPiece(move.StartSquare);
                 updateAccumulators(piece, move);
-
                 board.MakeMove(move);
+
                 score = -qSearch(-beta, -alpha, ply + 1);
+
                 board.UndoMove(move);
                 undoUpdateAccumulators(piece, move);
 
                 if (score > bestScore)
                 {
+                    // Step 8: Update best move, score and alpha
                     bestMove = move;
                     bestScore = score;
                     if (score > alpha)
                     {
                         alpha = score;
-                        // A/B pruning
-                        if (score >= beta)
-                            break;
+                        // Step 9: Beta pruning
+                        if (score >= beta) break;
                     }
                 }
-
             }
 
+            // Step 10: Update TT
             tt = (
-                    board.ZobristKey,
-                    alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
-                    Math.Clamp(bestScore, mateScore, -mateScore),
-                    0,
-                    bestScore >= beta ? lowerbound /* lowerbound */ : alpha == oldAlpha ? upperbound /* upperbound */ : exact /* Exact */
+                board.ZobristKey,
+                alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
+                Math.Clamp(bestScore, mateScore, -mateScore),
+                0,
+                bestScore >= beta ? lowerbound : alpha == oldAlpha ? upperbound : exact
             );
+
             return bestScore;
         }
 
@@ -703,81 +691,65 @@ public class MyBot : IChessBot
         int search(int depth, int ply, int alpha, int beta)
         {
 
-            // Hard time limit
+            // Step 1 Hard time limit
             if (depth > 1 && timer.MillisecondsElapsedThisTurn >= timer.MillisecondsRemaining / hardBoundTimeRatio) throw null;
 
-
-            selDepth = Math.Max(ply, selDepth);
-
-            int mating_value = -mateScore - ply;
-
-            if (mating_value < beta)
-            {
-                beta = mating_value;
-                if (alpha >= mating_value) return mating_value;
-            }
-
-            mating_value = mateScore + ply;
-
-            if (mating_value > alpha)
-            {
-                alpha = mating_value;
-                if (beta <= mating_value) return mating_value;
-            }
+            // Step 2 Update selective depth
+            if (ply > selDepth) selDepth = ply;
 
             bool isRoot = ply == 0;
-            bool nonPv = alpha + 1 >= beta;
+            bool nonPv = alpha + 1 == beta;
 
+            // Step 3 Mate distancing pruning
+            if (!isRoot)
+            {
+                alpha = Math.Max(alpha, mateScore + ply);
+                beta = Math.Min(beta, -mateScore - ply - 1);
+
+                if (alpha >= beta)
+                    return alpha;
+            }
+
+            // Step 4 Resolving terminal nodes
+            if (board.IsDraw() && !isRoot) return 0;
+            if (board.IsInCheckmate()) return mateScore + ply;
+
+            // Step 5 TT Pruning
             ref var tt = ref transpositionTable[board.ZobristKey & (ulong)(hashSize - 1)];
             var (ttHash, ttMoveRaw, score, ttDepth, ttBound) = tt;
 
             bool ttHit = ttHash == board.ZobristKey;
             int oldAlpha = alpha;
 
-            // Terminal nodes
-            if (board.IsInCheckmate() && !isRoot)
-                return mateScore + ply;
-            if (board.IsDraw() && !isRoot)
-                return 0;
-
             if (nonPv && ttHit)
             {
                 if (ttDepth >= depth)
                 {
-                    if (ttBound == lowerbound && score >= beta)
-                    {
-                        return score;
-                    }
-
-                    else if (ttBound == upperbound && score <= alpha)
-                    {
-                        return score;
-                    }
-                    else if (ttBound == exact)
+                    if ((ttBound == lowerbound && score >= beta) ||
+                        (ttBound == upperbound && score <= alpha) ||
+                        (ttBound == exact))
                     {
                         return score;
                     }
                 }
             }
-            else if (!nonPv && depth > iirDepth)
-                // Internal iterative reduction
-                depth--;
+            // Step 6 Internal iterative reduction
+            else if (!nonPv && depth > iirDepth) depth--;
 
-            // Start Quiescence Search
-            if (depth < 1)
-                return qSearch(alpha, beta, ply);
+            // Step 7 Start quiescence search if depth < 1
+            if (depth < 1) return qSearch(alpha, beta, ply);
 
-            // Static eval needed for RFP and NMP
+            // Step 8 Static eval needed for RFP and NMP
             int eval = Evaluate(board);
 
-            // Index for killers
+            // Step 9 Index for killers
             int killerIndex = ply & 4095;
 
             bool nodeIsCheck = board.IsInCheck();
-            // Reverse futility pruning
+            // Step 10 Reverse futility pruning
             if (nonPv && depth <= rfpDepth && eval - rfpMargin * depth >= beta && !nodeIsCheck) return eval;
 
-            // Null move pruning
+            // Step 11 Null move pruning
             if (nonPv && eval >= beta && !nodeIsCheck)
             {
                 board.ForceSkipTurn();
@@ -791,51 +763,75 @@ public class MyBot : IChessBot
             int moveCount = 0;
             int quietIndex = 0;
 
-            // orderVariable(priority)
-            // TT(0),  MVV-LVA ordering(1),  Killer Moves(2)
-
             Move bestMove = Move.NullMove;
             Move[] legals = board.GetLegalMoves();
 
             (int, int)[] quietsFromTo = new (int, int)[4096];
             Array.Fill(quietsFromTo, (-1, -1));
 
-            legals = legals.OrderByDescending(move => ttHit && move.RawValue == ttMoveRaw ? 9_000_000_000_000_000_000
-                                          : move.IsCapture ? 1_000_000_000_000_000_000 * (long)move.CapturePieceType - (long)move.MovePieceType
-                                          : move == killers[killerIndex] ? 500_000_000_000_000_000
-                                          : history[move.StartSquare.Index, move.TargetSquare.Index]).ToArray();
+            // Step 12 Move reordering
+            // orderVariable(priority)
+            // TT(0),  MVV-LVA ordering(1),  Killer Moves(2)
 
-            Move move;
+            int[] orderKeys = new int[legals.Length];
             for (int i = 0; i < legals.Length; i++)
             {
+                var ormove = legals[i];
+                int orderKey = 0;
+
+                if (ttHit && ormove.RawValue == ttMoveRaw)
+                {
+                    orderKey = 100_000_000;
+                }
+                else if (ormove.IsCapture)
+                {
+                    orderKey = 1_000_000 * (int)ormove.CapturePieceType - (int)ormove.MovePieceType;
+                }
+                else if (ormove == killers[killerIndex])
+                {
+                    orderKey = 100_000;
+                }
+                else
+                {
+                    orderKey = history[ormove.StartSquare.Index, ormove.TargetSquare.Index];
+                }
+
+                orderKeys[i] = orderKey;
+            }
+
+            Array.Sort(orderKeys, legals);
+
+            Move move;
+            for (int i = legals.Length - 1; i >= 0; i--)
+            {
+                moveCount++;
                 move = legals[i];
+
+                // Budget late moves pruning
+                if (legals.Length > 15 && moveCount >= legals.Length - 2 && !move.IsCapture && nonPv) continue;
+
                 bool isQuiet = !move.IsCapture;
 
-                if (nonPv && depth <= futilityDepth && isQuiet && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100)
-                    continue;
+                // Step 13 Futility pruning
+                if (nonPv && depth <= futilityDepth && isQuiet && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100) continue;
 
-                if (moveCount > 3 + depth * depth && isQuiet && nonPv)
-                    continue;
-
-                moveCount++;
                 nodes++;
                 totalNodes++;
 
+                // Step 14 Late moves reduction
+                int reduction = moveCount > lmrMoveCount && depth >= lmrDepth && isQuiet && !nodeIsCheck && nonPv ? (int)(lmrBase + Math.Log(depth) * Math.Log(moveCount) * lmrMul) : 0;
 
-                int reduction = moveCount > lmrCount && depth >= lmrDepth && isQuiet && !nodeIsCheck && nonPv ? (int)(lmrBase + Math.Log(depth) * Math.Log(moveCount) * lmrMul) : 0;
-               
                 Piece piece = board.GetPiece(move.StartSquare);
                 updateAccumulators(piece, move);
 
                 board.MakeMove(move);
 
-                // Check extension
+                // Step 15 Check extension
                 int moveExtension = board.IsInCheck() ? 1 : 0;
 
                 score = 0;
 
-
-                // Principle variation search
+                // Step 16 Principle variation search
                 if (moveCount == 1 && !nonPv)
                 {
                     score = -search(depth - 1 + moveExtension, ply + 1, -beta, -alpha);
@@ -856,7 +852,7 @@ public class MyBot : IChessBot
                 board.UndoMove(move);
                 undoUpdateAccumulators(piece, move);
 
-                // Updating stuff
+                // Step 17 Updating best score, best move and alpha
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -868,7 +864,7 @@ public class MyBot : IChessBot
                     {
                         alpha = score;
 
-                        // A/B pruning
+                        // Step 18 Beta pruning
                         if (score >= beta)
                         {
 
@@ -876,22 +872,23 @@ public class MyBot : IChessBot
                             {
                                 int bonus = depth * depth;
 
-                                // History Malus
-                                foreach (var indexes in quietsFromTo)
+                                // Step 19 History Malus
+                                for (i = 0; i < quietsFromTo.Length; i++)
                                 {
+                                    var indexes = quietsFromTo[i];
                                     if (indexes.Item1 == -1)
                                         break;
                                     history[indexes.Item1, indexes.Item2] -= bonus + (history[indexes.Item1, indexes.Item2] * bonus / 16384);
                                 }
 
-                                // History bonus
+                                // Step 20 History bonus
                                 history[move.StartSquare.Index, move.TargetSquare.Index] += bonus - (history[move.StartSquare.Index, move.TargetSquare.Index] * bonus / 16384);
 
-                                // Update quiet list for this
+                                // Step 21 Update quiet list for this
                                 quietsFromTo[quietIndex] = (move.StartSquare.Index, move.TargetSquare.Index);
                                 quietIndex++;
 
-                                // Killer moves
+                                // Step 22 Killer moves
                                 killers[killerIndex] = move;
 
                             }
@@ -900,7 +897,7 @@ public class MyBot : IChessBot
                     }
                 }
 
-                // Update quiet list
+                // Step 23 Update quiet list
                 if (isQuiet)
                 {
                     quietsFromTo[quietIndex] = (move.StartSquare.Index, move.TargetSquare.Index);
@@ -908,6 +905,7 @@ public class MyBot : IChessBot
                 }
             }
 
+            // Step 25 Update TT
             tt = (
                     board.ZobristKey,
                     alpha > oldAlpha ? bestMove.RawValue : ttMoveRaw,
@@ -937,13 +935,18 @@ public class MyBot : IChessBot
                 int alpha = -infinity;
                 int beta = infinity;
                 int delta = 0;
+
+                int researches = 0;
+
+                int newScore;
+
                 if (globalDepth > aspDepth)
                 {
                     delta = aspDelta;
                     alpha = score - delta;
                     beta = score + delta;
                 }
-                int newScore;
+
                 while (true)
                 {
                     newScore = search(globalDepth, 0, alpha, beta);
@@ -962,6 +965,9 @@ public class MyBot : IChessBot
                     }
                     else
                         break;
+
+                    researches++;
+
                     if (delta <= 500 && timer.MillisecondsElapsedThisTurn < timer.MillisecondsRemaining / softBoundTimeRatio)
                         delta += delta;
                     else

@@ -1,6 +1,4 @@
-﻿using ChessChallenge.Application;
-
-namespace Chess_Challenge.Cli
+﻿namespace Chess_Challenge.Cli
 {
     internal class Program
     {
@@ -15,7 +13,7 @@ namespace Chess_Challenge.Cli
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("| Version    ");
             Console.ResetColor();
-            Console.WriteLine("0.1.6                                  |");
+            Console.WriteLine("0.1.7                                  |");
             Console.WriteLine("+---------------------------------------------------+");
             var uci = new Uci();
             uci.Run();
