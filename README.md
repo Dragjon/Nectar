@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.5-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.6-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -114,8 +114,9 @@ def SCReLU(x):
 ### Rating Changes
 | Version | SPRT Elo Gains | Main Changes|
 |:-:|:-:|:-:|
+| 0.1.6 | 23.9 +/- 15.7 | Removed LMP
 | 0.1.5 | 34.8 +/- 19.7 | Changed to 16 hl
-| 0.1.4 | 51.0 +/- 24.6 | Changed input shape and num hidden layers, Efficient updates, SIMD, Hand-retuning values, Refactors
+| 0.1.4 | 51.0 +/- 24.6 | Changed input shape and num hidden layers, Efficient updates, Hand-retuning values, Refactors
 | 0.1.3 | 16.7 +/- 12.3 | Changed 32hl -> 8hl
 | 0.1.2 | 10.6 +/- 8.5 | Added history malus + overwrite killers
 | 0.1.1 | 57.7 +/- 26.4 | Quantisation
