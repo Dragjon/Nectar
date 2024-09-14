@@ -114,7 +114,7 @@ def SCReLU(x):
 * <= V0.1.2 : The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
 | Version | SPRT Elo Gains | CCRL Blitz | Main Changes|
-|:-:|:-:|:-:|
+|:-:|:-:|:-:|:-:|
 | 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70
 | 0.1.6 | 23.9 +/- 15.7 | - | Removed LMP
 | 0.1.5 | 34.8 +/- 19.7 | - | Changed to 16 hl
