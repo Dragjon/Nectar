@@ -62,7 +62,7 @@
         }
       }
     },
-    "net6.0/win-x64": {
+    "net6.0/linux-x64": {
       "Microsoft.NET.ILLink.Analyzers/7.0.100-1.23401.1": {
         "type": "package",
         "build": {
@@ -91,7 +91,7 @@
           }
         },
         "native": {
-          "runtimes/win-x64/native/raylib.dll": {}
+          "runtimes/linux-x64/native/libraylib.so": {}
         }
       },
       "System.Numerics.Vectors/4.5.0": {
@@ -237,11 +237,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dragon\\desktop\\nectar\\Chess-Challenge\\Chess-Challenge.csproj",
+      "projectUniqueName": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
       "projectName": "Chess-Challenge",
-      "projectPath": "C:\\Users\\dragon\\desktop\\nectar\\Chess-Challenge\\Chess-Challenge.csproj",
+      "projectPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\Chess-Challenge.csproj",
       "packagesPath": "C:\\Users\\dragon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dragon\\desktop\\nectar\\Chess-Challenge\\obj\\",
+      "outputPath": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -309,15 +309,15 @@
         "warn": true,
         "downloadDependencies": [
           {
-            "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+            "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
             "version": "[6.0.33, 6.0.33]"
           },
           {
-            "name": "Microsoft.NETCore.App.Runtime.win-x64",
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
             "version": "[6.0.33, 6.0.33]"
           },
           {
-            "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+            "name": "Microsoft.NETCore.App.Runtime.linux-x64",
             "version": "[6.0.33, 6.0.33]"
           }
         ],
@@ -330,7 +330,7 @@
       }
     },
     "runtimes": {
-      "win-x64": {
+      "linux-x64": {
         "#import": []
       }
     }
