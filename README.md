@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.7-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.8-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -19,7 +19,7 @@
 </div>
 
 ## Overview
-My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me! You can track my progress [here](https://sprt.free.nf)
+My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me!
 
 ## Playing
 ### Locally
@@ -115,6 +115,7 @@ def SCReLU(x):
 ### Rating Changes
 | Version | SPRT Elo Gains | CCRL Blitz | Main Changes|
 |:-:|:-:|:-:|:-:|
+| 0.1.8 | 103.7 +/- 36.9 | - | Weather Factory tune (a=1000)
 | 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70
 | 0.1.6 | 23.9 +/- 15.7 | - | Removed LMP
 | 0.1.5 | 34.8 +/- 19.7 | - | Changed to 16 hl
