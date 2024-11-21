@@ -1,0 +1,2 @@
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\win-x64\publish\Chess-Challenge.pdb
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge\bin\Release\net6.0\win-x64\publish\Chess-Challenge.exe

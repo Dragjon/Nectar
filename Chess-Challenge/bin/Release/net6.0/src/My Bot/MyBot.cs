@@ -385,24 +385,24 @@ public class MyBot : IChessBot
     static int infinity = 30000;
     static int mateScore = -20000;
 
-    public static int nodeLimit = -1;
+    public static int nodeLimit = 0;
 
-    public static int rfpMargin = 85;
+    public static int rfpMargin = 72;
     public static int rfpDepth = 9;
     public static int NullMoveR = 4;
-    public static int futilityMargin = 250;
-    public static int futilityDepth = 4;
-    public static int aspDepth = 4;
-    public static int aspDelta = 12;
-    public static int lmrMoveCount = 3;
-    public static int hardBoundTimeRatio = 1;
-    public static int softBoundTimeRatio = 20;
-    public static int iirDepth = 3;
-    public static int lmrDepth = 2;
-    public static float lmrBase = 0.75F;
+    public static int futilityMargin = 252;
+    public static int futilityDepth = 2;
+    public static int aspDepth = 2;
+    public static int aspDelta = 38;
+    public static int lmrMoveCount = 4;
+    public static int hardBoundTimeRatio = 3;
+    public static int softBoundTimeRatio = 33;
+    public static int iirDepth = 7;
+    public static int lmrDepth = 1;
+    public static float lmrBase = 0.62F;
     public static float lmrMul = 0.4F;
-    public static int tempo = 14;
-    public static int[] deltas = { 0, 90, 340, 350, 410, 930 };
+    public static int tempo = 12;
+    public static int[] deltas = { 0, 125, 326, 361, 411, 938 };
 
     public static ulong totalNodes = 0;
 
@@ -418,7 +418,7 @@ public class MyBot : IChessBot
         totalNodes = 0;
     }
 
-    public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta, int VnodeLimit)
+    public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta, int VnodeLimit, int VlmrDepth, int VlmrBase, int VlmrMul)
     {
         hashSizeMB = VHashSizeMB;
         hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
@@ -443,6 +443,9 @@ public class MyBot : IChessBot
         lmrMoveCount = VlmrMoveCount;
 
         nodeLimit = VnodeLimit;
+        lmrDepth = VlmrDepth;
+        lmrBase = ((float)VlmrBase) / 100;
+        lmrMul = ((float)VlmrMul) / 100;
 
     }
 
@@ -929,15 +932,12 @@ public class MyBot : IChessBot
             for (; timer.MillisecondsElapsedThisTurn < timer.MillisecondsRemaining / softBoundTimeRatio; ++globalDepth)
             {
                 // Soft bound node limit
-                if (nodeLimit != -1 && nodes > (ulong)nodeLimit)
+                if (nodeLimit != 0 && nodes > (ulong)nodeLimit)
                     break;
 
                 int alpha = -infinity;
                 int beta = infinity;
                 int delta = 0;
-
-                int researches = 0;
-
                 int newScore;
 
                 if (globalDepth > aspDepth)
@@ -965,8 +965,6 @@ public class MyBot : IChessBot
                     }
                     else
                         break;
-
-                    researches++;
 
                     if (delta <= 500 && timer.MillisecondsElapsedThisTurn < timer.MillisecondsRemaining / softBoundTimeRatio)
                         delta += delta;

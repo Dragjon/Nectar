@@ -12,6 +12,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Chess_Challenge.Cli
-build_property.ProjectDir = C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\
+build_property.ProjectDir = C:\Users\dragon\desktop\nectar\Chess-Challenge.Uci\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

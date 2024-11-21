@@ -27,9 +27,10 @@ C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Chal
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.AssemblyInfoInputs.cache
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.AssemblyInfo.cs
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.csproj.CoreCompileInputs.cache
-C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.csproj.CopyComplete
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.dll
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\refint\Chess-Challenge.Cli.dll
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.pdb
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.genruntimeconfig.cache
 C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\ref\Chess-Challenge.Cli.dll
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Challenge.Cli.sourcelink.json
+C:\Users\dragon\Desktop\Nectar\Chess-Challenge.Uci\obj\Release\net6.0\Chess-Ch.48640C7F.Up2Date

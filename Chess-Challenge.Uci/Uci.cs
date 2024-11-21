@@ -26,12 +26,15 @@ namespace Chess_Challenge.Cli
         private int _tempo;
         private int _lmrMoveCount;
         private int _iirDepth;
+        private int _lmrDepth;
         private int _pawnDelta;
         private int _knightDelta;
         private int _bishopDelta;
         private int _rookDelta;
         private int _queenDelta;
         private int _nodeLimit;
+        private int _lmrBase;
+        private int _lmrMul;
 
         public Uci()
         {
@@ -62,6 +65,9 @@ namespace Chess_Challenge.Cli
             _queenDelta = MyBot.deltas[5];
             _nullMoveR = MyBot.NullMoveR;
             _nodeLimit = MyBot.nodeLimit;
+            _lmrDepth = MyBot.lmrDepth;
+            _lmrBase = (int)(MyBot.lmrBase * 100);
+            _lmrMul = (int)(MyBot.lmrMul * 100);
         }
 
         private void HandleUci()
@@ -91,7 +97,7 @@ namespace Chess_Challenge.Cli
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.Write("option ");
                 Console.ResetColor();
-                Console.WriteLine($"name nodeLimit type spin {_nodeLimit,5} default {-1,5} min {1000000,8} max");
+                Console.WriteLine($"name nodeLimit type spin {_nodeLimit,5} default {0,5} min {1000000,8} max");
             }
             else
             {
@@ -99,27 +105,30 @@ namespace Chess_Challenge.Cli
                 Console.WriteLine("id author Dragjon");
                 Console.WriteLine($"option name Hash type spin default {_hashSizeMB} min 1 max 1024");
                 Console.WriteLine($"option name Threads type spin default 1 min 1 max 1");
-                Console.WriteLine($"name nodeLimit type spin default {_nodeLimit} min 0 max 1000000");
+                Console.WriteLine($"option name nodeLimit type spin default {_nodeLimit} min 0 max 1000000");
+                /*
+                Console.WriteLine($"option name rfpMargin type spin default {_rfpMargin} min 0 max 200");
+                Console.WriteLine($"option name rfpDepth type spin default {_rfpDepth} min 0 max 15");
+                Console.WriteLine($"option name futilityMargin type spin default {_futilityMargin} min 0 max 400");
+                Console.WriteLine($"option name futilityDepth type spin default {_futilityDepth} min 0 max 10");
+                Console.WriteLine($"option name hardBoundTimeRatio type spin default {_hardBoundTimeRatio} min 1 max 100");
+                Console.WriteLine($"option name softBoundTimeRatio type spin default {_softBoundTimeRatio} min 1 max 300");
+                Console.WriteLine($"option name aspDepth type spin default {_aspDepth} min 0 max 10");
+                Console.WriteLine($"option name aspDelta type spin default {_aspDelta} min 0 max 100");
+                Console.WriteLine($"option name tempo type spin default {_tempo} min 0 max 40");
+                Console.WriteLine($"option name lmrMoveCount type spin default {_lmrMoveCount} min 0 max 10");
+                Console.WriteLine($"option name iirDepth type spin default {_iirDepth} min 0 max 10");
+                Console.WriteLine($"option name pawnDelta type spin default {_pawnDelta} min 0 max 400");
+                Console.WriteLine($"option name knightDelta type spin default {_knightDelta} min 0 max 900");
+                Console.WriteLine($"option name bishopDelta type spin default {_bishopDelta} min 0 max 1000");
+                Console.WriteLine($"option name rookDelta type spin default {_rookDelta} min 0 max 2000");
+                Console.WriteLine($"option name queenDelta type spin default {_queenDelta} min 0 max 5000");
+                Console.WriteLine($"option name nullMoveR type spin default {_nullMoveR} min 0 max 10");
+                Console.WriteLine($"option name lmrDepth type spin default {_lmrDepth} min 0 max 8");
+                Console.WriteLine($"option name lmrBase type spin default {_lmrBase} min 0 max 500");
+                Console.WriteLine($"option name lmrMul type spin default {_lmrMul} min 0 max 300");
+                */
             }
-            /*
-            Console.WriteLine($"option name rfpMargin type spin default {_rfpMargin} min 0 max 200");
-            Console.WriteLine($"option name rfpDepth type spin default {_rfpDepth} min 0 max 15");
-            Console.WriteLine($"option name futilityMargin type spin default {_futilityMargin} min 0 max 400");
-            Console.WriteLine($"option name futilityDepth type spin default {_futilityDepth} min 0 max 10");
-            Console.WriteLine($"option name hardBoundTimeRatio type spin default {_hardBoundTimeRatio} min 1 max 100");
-            Console.WriteLine($"option name softBoundTimeRatio type spin default {_softBoundTimeRatio} min 1 max 300");
-            Console.WriteLine($"option name aspDepth type spin default {_aspDepth} min 0 max 10");
-            Console.WriteLine($"option name aspDelta type spin default {_aspDelta} min 0 max 100");
-            Console.WriteLine($"option name tempo type spin default {_tempo} min 0 max 40");
-            Console.WriteLine($"option name lmrMoveCount type spin default {_lmrMoveCount} min 0 max 10");
-            Console.WriteLine($"option name iirDepth type spin default {_iirDepth} min 0 max 10");
-            Console.WriteLine($"option name pawnDelta type spin default {_pawnDelta} min 0 max 400");
-            Console.WriteLine($"option name knightDelta type spin default {_knightDelta} min 0 max 900");
-            Console.WriteLine($"option name bishopDelta type spin default {_bishopDelta} min 0 max 1000");
-            Console.WriteLine($"option name rookDelta type spin default {_rookDelta} min 0 max 2000");
-            Console.WriteLine($"option name queenDelta type spin default {_queenDelta} min 0 max 5000");
-            Console.WriteLine($"option name nullMoveR type spin default {_nullMoveR} min 0 max 10");
-            */
 
             Console.WriteLine("uciok");
         }
@@ -296,8 +305,34 @@ namespace Chess_Challenge.Cli
                     Console.WriteLine($"info string nodeLimit set to {_nodeLimit}");
                 }
             }
+            else if (optionName == "name" && words[2] == "lmrDepth" && words[3] == "value")
+            {
+                if (int.TryParse(words[4], out var lmrd))
+                {
+                    _lmrDepth = lmrd;
+                    Console.WriteLine($"info string lmrDepth set to {_lmrDepth}");
+                }
+            }
 
-            MyBot.setMargins(_hashSizeMB, _rfpMargin, _rfpDepth, _futilityMargin, _futilityDepth, _hardBoundTimeRatio, _softBoundTimeRatio, _aspDepth, _aspDelta, _nullMoveR, _lmrMoveCount, _iirDepth, _tempo, _pawnDelta, _knightDelta, _bishopDelta, _rookDelta, _queenDelta, _nodeLimit);
+            else if (optionName == "name" && words[2] == "lmrBase" && words[3] == "value")
+            {
+                if (int.TryParse(words[4], out var lmrb))
+                {
+                    _lmrBase = lmrb;
+                    Console.WriteLine($"info string lmrBase set to {_lmrBase}");
+                }
+            }
+
+            else if (optionName == "name" && words[2] == "lmrMul" && words[3] == "value")
+            {
+                if (int.TryParse(words[4], out var lmrm))
+                {
+                    _lmrBase = lmrm;
+                    Console.WriteLine($"info string lmrMul set to {_lmrMul}");
+                }
+            }
+
+            MyBot.setMargins(_hashSizeMB, _rfpMargin, _rfpDepth, _futilityMargin, _futilityDepth, _hardBoundTimeRatio, _softBoundTimeRatio, _aspDepth, _aspDelta, _nullMoveR, _lmrMoveCount, _iirDepth, _tempo, _pawnDelta, _knightDelta, _bishopDelta, _rookDelta, _queenDelta, _nodeLimit, _lmrDepth, _lmrBase, _lmrMul);
 
         }
 
