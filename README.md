@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.6-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.1.7-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -20,12 +20,10 @@
 
 ## Overview
 My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me! You can track my progress [here](https://sprt.free.nf)
-### Fancy interface (if opened in a terminal window)
-![Screenshot 2024-08-30 235217](https://github.com/user-attachments/assets/7543c5e3-5696-4df7-a834-5ad411dcc658)
 
 ## Playing
 ### Locally
-You can download the precompiled executables for windows [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
+You can download the precompiled executables for windows or linux [here](https://github.com/Dragjon/Nectar/releases). Note that the compiled version does not come with a GUI. You have to connect it with a chess GUI such as Arena, Banksia or Cutechess. Make sure to set working directory to the directory of the engine executable as the engine reads off its weights from there.
 ### Online
 You can play the latest release of Nectar online at lichess [here](https://lichess.org/@/NectarBOT). Note that it will not always be online.
 ## Search Features
@@ -35,6 +33,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - Principal variation search (triple PVS)
 - Quiescence search
 - Efficient updates (UE)
+- Tempo
 ### Pruning
 - Beta pruning
 - Reverse futility pruning
@@ -52,7 +51,9 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - Transposition table ordering
 - MVV-LVA ordering
 - Killer moves (1 move per ply)
-- History heuristic (with gravity and malus)
+- History heuristic
+  * History gravity
+  * History malus (penalty)
 
 ## Neural Network
 Trained with [Nano](https://github.com/Dragjon/Nano)
@@ -109,38 +110,29 @@ def SCReLU(x):
     return tf.square(tf.clip_by_value(x, 0, 1))
 ```
 ### Training
-* V0.1.4 onwards: Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture
-* Before V0.1.3: The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
+* <= V0.1.7 : (bee-net) Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture using version V0.1.3
+* <= V0.1.2 : The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
-| Version | SPRT Elo Gains | Main Changes|
-|:-:|:-:|:-:|
-| 0.1.6 | 23.9 +/- 15.7 | Removed LMP
-| 0.1.5 | 34.8 +/- 19.7 | Changed to 16 hl
-| 0.1.4 | 51.0 +/- 24.6 | Changed input shape and num hidden layers, Efficient updates, Hand-retuning values, Refactors
-| 0.1.3 | 16.7 +/- 12.3 | Changed 32hl -> 8hl
-| 0.1.2 | 10.6 +/- 8.5 | Added history malus + overwrite killers
-| 0.1.1 | 57.7 +/- 26.4 | Quantisation
-| 0.1.0 | 29.7 +/- 18.0 | Changed scale factor + minor refactor
-| 0.0.9 | 85.5 +/- 33.0 | Changed scale factor
-| 0.0.8 | 29.7 +/- 18.0 | No reset killers + History Gravity 
-| 0.0.7 | 27.6 +/- 17.2 | LMR Log Formula
-| 0.0.6 | 36.6 +/- 20.3 | Hand tuned search parameters
-| 0.0.5 | 35.1 +/- 19.8 | 2x More data + Trained with AdamW optimiser
-| 0.0.4 | 10.6 +/- 8.5 | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) |
-| 0.0.3 | 57.0 +/- 26.3 | Tuned with weather factory, Changed some implementations |
-| 0.0.2 | 11.5 +/- 9.2 | SCReLU nets |
-| 0.0.1 | - | Initial Release |
-## Rating
-```
-Rank Name                          Elo     +/-   Games   Score    Draw
-   1 snowy-v0.2                    211      70     120   77.1%   10.8%
-   2 Napolean-v1.4.0                35      59     120   55.0%   13.3%
-   3 CDrill_1800_Build_4             0      59     120   50.0%   10.0%
-   4 NectarV0.1.5                  -53      60     120   42.5%   11.7%
-   5 shallowblue-v2.0.0           -187      70     120   25.4%    5.8%
+| Version | SPRT Elo Gains | CCRL Blitz | Main Changes|
+|:-:|:-:|:-:|:-:|
+| 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70
+| 0.1.6 | 23.9 +/- 15.7 | - | Removed LMP
+| 0.1.5 | 34.8 +/- 19.7 | - | Changed to 16 hl
+| 0.1.4 | 51.0 +/- 24.6 | 1713 | Changed input shape and num hidden layers, Efficient updates, Hand-retuning values, Refactors
+| 0.1.3 | 16.7 +/- 12.3 | - | Changed 32hl -> 8hl
+| 0.1.2 | 10.6 +/- 8.5 | - | Added history malus + overwrite killers
+| 0.1.1 | 57.7 +/- 26.4 | - | Quantisation
+| 0.1.0 | 29.7 +/- 18.0 | - | Changed scale factor + minor refactor
+| 0.0.9 | 85.5 +/- 33.0 | - | Changed scale factor
+| 0.0.8 | 29.7 +/- 18.0 | - | No reset killers + History Gravity 
+| 0.0.7 | 27.6 +/- 17.2 | - | LMR Log Formula
+| 0.0.6 | 36.6 +/- 20.3 | - | Hand tuned search parameters
+| 0.0.5 | 35.1 +/- 19.8 | - | 2x More data + Trained with AdamW optimiser
+| 0.0.4 | 10.6 +/- 8.5 | - | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) |
+| 0.0.3 | 57.0 +/- 26.3 | - | Tuned with weather factory, Changed some implementations |
+| 0.0.2 | 11.5 +/- 9.2 | - | SCReLU nets |
+| 0.0.1 | - | - | Initial Release |
 
-Elo: ~2000
-```
 ## Credits
 - Sebastian Lague (For the whole chess framework)
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
