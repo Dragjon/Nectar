@@ -19,7 +19,7 @@
 </div>
 
 ## Overview
-My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me! You can track my progress [here](https://sprt.free.nf)
+My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me!
 
 ## Playing
 ### Locally
