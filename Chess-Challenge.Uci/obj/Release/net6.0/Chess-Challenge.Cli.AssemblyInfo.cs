@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Chess-Challenge.Cli")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96f14be8cdde0042b9f80c63ebb248828978d01f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60131ee90892e9c4291a33eb5f4f39630a17267f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Chess-Challenge.Cli")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Chess-Challenge.Cli")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

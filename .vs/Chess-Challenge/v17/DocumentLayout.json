@@ -7,15 +7,15 @@
       "RelativeMoniker": "D:0:0:{2803E64F-15AC-430B-A5A2-69C00EA7505F}|Chess-Challenge\\Chess-Challenge.csproj|solutionrelative:chess-challenge\\src\\my bot\\mybot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\dragon\\AppData\\Local\\Temp\\.vsdbgsrc\\3ae6e9cc50b88a8f91b4675199e49c9dc2c80f917693bbdd53d6d88c66893e49\\BoardUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{381E535F-2BC2-4995-9913-002010AD4351}|Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj|c:\\users\\dragon\\desktop\\nectar\\chess-challenge.uci\\uci.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{381E535F-2BC2-4995-9913-002010AD4351}|Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj|solutionrelative:chess-challenge.uci\\uci.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{381E535F-2BC2-4995-9913-002010AD4351}|Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj|c:\\users\\dragon\\desktop\\nectar\\chess-challenge.uci\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{381E535F-2BC2-4995-9913-002010AD4351}|Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj|solutionrelative:chess-challenge.uci\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{381E535F-2BC2-4995-9913-002010AD4351}|Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj|c:\\users\\dragon\\desktop\\nectar\\chess-challenge.uci\\uci.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{381E535F-2BC2-4995-9913-002010AD4351}|Chess-Challenge.Uci\\Chess-Challenge.Cli.csproj|solutionrelative:chess-challenge.uci\\uci.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\dragon\\AppData\\Local\\Temp\\.vsdbgsrc\\3ae6e9cc50b88a8f91b4675199e49c9dc2c80f917693bbdd53d6d88c66893e49\\BoardUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2803E64F-15AC-430B-A5A2-69C00EA7505F}|Chess-Challenge\\Chess-Challenge.csproj|c:\\users\\dragon\\desktop\\nectar\\chess-challenge\\src\\api\\board.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -49,13 +49,13 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Uci.cs",
               "DocumentMoniker": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Uci.cs",
               "RelativeDocumentMoniker": "Chess-Challenge.Uci\\Uci.cs",
               "ToolTip": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Uci.cs",
               "RelativeToolTip": "Chess-Challenge.Uci\\Uci.cs",
-              "ViewState": "AQIAAFIAAACAzszMzMwmwHAAAAA5AAAA",
+              "ViewState": "AQIAALAAAAAACAAAAAArwCsAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-27T11:12:23.069Z",
               "EditorCaption": ""
@@ -68,7 +68,7 @@
               "RelativeDocumentMoniker": "Chess-Challenge\\src\\My Bot\\MyBot.cs",
               "ToolTip": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge\\src\\My Bot\\MyBot.cs",
               "RelativeToolTip": "Chess-Challenge\\src\\My Bot\\MyBot.cs",
-              "ViewState": "AQIAAAIAAAAAAAAAAAAAABUAAABEAAAA",
+              "ViewState": "AQIAAMMCAAAAAAAAAIAWwNoCAAArAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-27T05:08:43.505Z",
               "EditorCaption": ""
@@ -106,14 +106,14 @@
               "RelativeDocumentMoniker": "Chess-Challenge.Uci\\Program.cs",
               "ToolTip": "C:\\Users\\dragon\\Desktop\\Nectar\\Chess-Challenge.Uci\\Program.cs",
               "RelativeToolTip": "Chess-Challenge.Uci\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAABAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAoAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-30T14:48:25.51Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "BoardUI.cs",
               "DocumentMoniker": "C:\\Users\\dragon\\AppData\\Local\\Temp\\.vsdbgsrc\\3ae6e9cc50b88a8f91b4675199e49c9dc2c80f917693bbdd53d6d88c66893e49\\BoardUI.cs",
               "RelativeDocumentMoniker": "..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\3ae6e9cc50b88a8f91b4675199e49c9dc2c80f917693bbdd53d6d88c66893e49\\BoardUI.cs",
