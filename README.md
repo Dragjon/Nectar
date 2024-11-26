@@ -119,7 +119,7 @@ def SCReLU(x):
 | 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70
 | 0.1.6 | 23.9 +/- 15.7 | - | Removed LMP
 | 0.1.5 | 34.8 +/- 19.7 | - | Changed to 16 hl [NN Label (ed1f4bc)]
-| 0.1.4 | 51.0 +/- 24.6 | 1713 | Changed input shape and num hidden layers, Efficient updates, Hand-retuning values, Refactors
+| 0.1.4 | 51.0 +/- 24.6 | 1718 | Changed input shape and num hidden layers, Efficient updates, Hand-retuning values, Refactors
 | 0.1.3 | 16.7 +/- 12.3 | - | Changed 32hl -> 8hl
 | 0.1.2 | 10.6 +/- 8.5 | - | Added history malus + overwrite killers
 | 0.1.1 | 57.7 +/- 26.4 | - | Quantisation
