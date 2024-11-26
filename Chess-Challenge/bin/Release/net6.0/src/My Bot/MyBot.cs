@@ -401,6 +401,10 @@ public class MyBot : IChessBot
     public static float lmrMul = 0.4F;
     public static int tempo = 12;
     public static int[] deltas = { 0, 125, 326, 361, 411, 938 };
+    public static int lmpDepth = 3;
+    public static int lmpDMul = 8;
+
+
 
     public static ulong totalNodes = 0;
 
@@ -771,8 +775,8 @@ public class MyBot : IChessBot
             (int, int)[] quietsFromTo = new (int, int)[4096];
             Array.Fill(quietsFromTo, (-1, -1));
 
-            // Move reordering
-            // orderVariable(priority)
+            // Move Reordering
+            // Legend: orderVariable(priority)
             // TT(0),  MVV-LVA ordering(1),  Killer Moves(2)
 
             int[] orderKeys = new int[legals.Length];
@@ -809,10 +813,10 @@ public class MyBot : IChessBot
                 moveCount++;
                 move = legals[i];
 
-                // Budget late moves pruning
-                if (legals.Length > 15 && moveCount >= legals.Length - 2 && !move.IsCapture && nonPv) continue;
-
                 bool isQuiet = !move.IsCapture;
+
+                // Budget late moves pruning
+                if (isQuiet && nonPv && depth <= lmpDepth && moveCount > lmpDMul * depth) continue;
 
                 // Futility pruning
                 if (nonPv && depth <= futilityDepth && isQuiet && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100) continue;
