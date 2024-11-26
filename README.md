@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.1.9-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.2.0-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -43,6 +43,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - QSearch delta pruning
 - Transposition table cutoffs
 - Mate Distancing pruning
+- Late movr pruning
 ### Reductions/Extensions
 - Late moves reduction (Log formula)
 - Check extensions
@@ -115,6 +116,7 @@ def SCReLU(x):
 ### Rating Changes
 | Version | SPRT Elo Gains | CCRL Blitz | Main Changes|
 |:-:|:-:|:-:|:-:|
+| 0.2.0 | 32.6 +/- 18.9 | - | Late move pruning
 | 0.1.9 | 13.1 +/- 10.3 | - | Added conditions for NMP
 | 0.1.8 | 103.7 +/- 36.9 | - | Weather Factory tune (a=1000)
 | 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70
