@@ -114,39 +114,39 @@ def SCReLU(x):
 * <= V0.1.7 : (bee-net) Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture using version V0.1.3
 * <= V0.1.2 : The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
-| Version | SPRT Elo Gains | CCRL Blitz | Main Changes|
-|:-:|:-:|:-:|:-:|
-| 0.2.0 | 32.6 +/- 18.9 | - | Late move pruning
-| 0.1.9 | 13.1 +/- 10.3 | - | Added conditions for NMP
-| 0.1.8 | 103.7 +/- 36.9 | - | Weather Factory tune (a=1000)
-| 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70
-| 0.1.6 | 23.9 +/- 15.7 | - | Removed LMP
-| 0.1.5 | 34.8 +/- 19.7 | - | Changed to 16 hl [NN Label (ed1f4bc)]
-| 0.1.4 | 51.0 +/- 24.6 | 1718 | Changed input shape and num hidden layers, Efficient updates, Hand-retuning values, Refactors
-| 0.1.3 | 16.7 +/- 12.3 | - | Changed 32hl -> 8hl
-| 0.1.2 | 10.6 +/- 8.5 | - | Added history malus + overwrite killers
-| 0.1.1 | 57.7 +/- 26.4 | - | Quantisation
-| 0.1.0 | 29.7 +/- 18.0 | - | Changed scale factor + minor refactor
-| 0.0.9 | 85.5 +/- 33.0 | - | Changed scale factor
-| 0.0.8 | 29.7 +/- 18.0 | - | No reset killers + History Gravity 
-| 0.0.7 | 27.6 +/- 17.2 | - | LMR Log Formula
-| 0.0.6 | 36.6 +/- 20.3 | - | Hand tuned search parameters
-| 0.0.5 | 35.1 +/- 19.8 | - | 2x More data + Trained with AdamW optimiser
-| 0.0.4 | 10.6 +/- 8.5 | - | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) |
-| 0.0.3 | 57.0 +/- 26.3 | - | Tuned with weather factory, Changed some implementations |
-| 0.0.2 | 11.5 +/- 9.2 | - | SCReLU nets |
-| 0.0.1 | - | - | Initial Release |
+| Version | SPRT Elo Gains | [CCRL Blitz](https://computerchess.org.uk/ccrl/404/) | Main Changes| Net |
+|-|-|-|-|-|
+| 0.2.0 | 32.6 +/- 18.9 | - | Late move pruning | ed1f4bc
+| 0.1.9 | 13.1 +/- 10.3 | - | Added conditions for NMP | ed1f4bc
+| 0.1.8 | 103.7 +/- 36.9 | - | Weather Factory tune (a=1000) | ed1f4bc
+| 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70 | unnamed
+| 0.1.6 | 23.9 +/- 15.7 | - | Removed LMP | unnamed
+| 0.1.5 | 34.8 +/- 19.7 | - | Changed to 16 hl | unnamed
+| 0.1.4 | 51.0 +/- 24.6 | 1718 | Changed input shape and num hidden layers, Efficient updates, Hand-retuning values, Refactors | Unnamed
+| 0.1.3 | 16.7 +/- 12.3 | - | Changed 32hl -> 8hl | Unnamed
+| 0.1.2 | 10.6 +/- 8.5 | - | Added history malus + overwrite killers | Unnamed
+| 0.1.1 | 57.7 +/- 26.4 | - | Quantisation | Unamed
+| 0.1.0 | 29.7 +/- 18.0 | - | Changed scale factor + minor refactor | Unnamed
+| 0.0.9 | 85.5 +/- 33.0 | - | Changed scale factor | Unnamed
+| 0.0.8 | 29.7 +/- 18.0 | - | No reset killers + History Gravity | Unnamed
+| 0.0.7 | 27.6 +/- 17.2 | - | LMR Log Formula | Unnamed
+| 0.0.6 | 36.6 +/- 20.3 | - | Hand tuned search parameters | Unnamed
+| 0.0.5 | 35.1 +/- 19.8 | - | 2x More data + Trained with AdamW optimiser | Unnamed
+| 0.0.4 | 10.6 +/- 8.5 | - | Tweaked Futility pruning, Changed 2 NNs to 1 NN (for both colours) | Unnamed
+| 0.0.3 | 57.0 +/- 26.3 | - | Tuned with weather factory, Changed some implementations | Unnamed
+| 0.0.2 | 11.5 +/- 9.2 | - | SCReLU nets | Unnamed
+| 0.0.1 | - | - | Initial Release | Unnamed
 
 ## Credits
 - Sebastian Lague (For the whole chess framework)
 - Ciekce [Stormphrax] (For teaching me how NNUE works and the NORMAL way to do stuff and AdamW)
-- ChatGPT (The SIMD optimisations)
 - mid_88 [Spaghet] (Explaining how to load binary weights)
 - cj5716 [Alexandria] (Parsing the stash data)
 - Gediminas (For the UCI interface for Sebastian Lagues's framework)
 - gabe [Obsidian] (NNUE explanations)
 - jw [Obsidian] (NNUE explanations)
 - Matt [Heimdall] (Nicely documented code, based some params on it)
+- ChatGPT (Code optimisations)
 - And a lot more people in the [Engine Programming Discord](https://discord.gg/ZaDHayGV) and [Stockfish Discord](https://discord.gg/ZH62b2rS)
 ## Future plans
 - ~Change input layer to 728 instead of 384~
