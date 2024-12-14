@@ -119,7 +119,7 @@ def SCReLU(x):
 | 0.2.1 | 6.3 +/- 5.0 | - | Weather factory tune LMP | ed1f4bc
 | 0.2.0 | 32.6 +/- 18.9 | - | Late move pruning | ed1f4bc
 | 0.1.9 | 13.1 +/- 10.3 | - | Added conditions for NMP | ed1f4bc
-| 0.1.8 | 103.7 +/- 36.9 | - | Weather Factory tune (a=1000) | ed1f4bc
+| 0.1.8 | 103.7 +/- 36.9 | 1851 | Weather Factory tune (a=1000) | ed1f4bc
 | 0.1.7 | 23.7 +/- 15.6 | - | Changed train epoch from 50 to 70 | Unnamed
 | 0.1.6 | 23.9 +/- 15.7 | - | Removed LMP | Unnamed
 | 0.1.5 | 34.8 +/- 19.7 | - | Changed to 16 hl | Unnamed
