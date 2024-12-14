@@ -8,7 +8,7 @@ public class MyBot : IChessBot
 
     static readonly int inputLayerSize = 768;
     static readonly int hiddenLayerSize = 16;
-    static readonly int scale = 150;
+    public static int scale = 150;
     static readonly int quantise = 255;
     static readonly int quantiseSquared = 255 * 255;
     static int[] FeatureWeights = new int[inputLayerSize * hiddenLayerSize];
@@ -385,22 +385,26 @@ public class MyBot : IChessBot
 
     public static int nodeLimit = 0;
 
-    public static int rfpMargin = 72;
+    public static int rfpMargin = 75;
     public static int rfpDepth = 9;
-    public static int NullMoveR = 4;
+    public static int NullMoveR = 5;
     public static int futilityMargin = 252;
-    public static int futilityDepth = 2;
+    public static int futilityDepth = 3;
     public static int aspDepth = 2;
-    public static int aspDelta = 38;
+    public static int aspDelta = 35;
     public static int lmrMoveCount = 4;
-    public static int hardBoundTimeRatio = 3;
+    public static int hardBoundTimeRatio = 2;
     public static int softBoundTimeRatio = 33;
-    public static int iirDepth = 7;
-    public static int lmrDepth = 1;
-    public static float lmrBase = 0.62F;
-    public static float lmrMul = 0.4F;
-    public static int tempo = 12;
-    public static int[] deltas = { 0, 125, 326, 361, 411, 938 };
+    public static int iirDepth = 9;
+    public static int lmrDepth = 2;
+    public static float lmrBase = 0.68F;
+    public static float lmrMul = 0.51F;
+    public static int tempo = 9;
+    public static int[] deltas = { 0, 141, 325, 374, 437, 934 };
+    public static int lmpDepth = 5;
+    public static int lmpDMul = 12;
+
+
 
     public static ulong totalNodes = 0;
 
@@ -416,7 +420,7 @@ public class MyBot : IChessBot
         totalNodes = 0;
     }
 
-    public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta, int VnodeLimit, int VlmrDepth, int VlmrBase, int VlmrMul)
+    public static void setMargins(int VHashSizeMB, int VrfpMargin, int VrfpDepth, int VfutilityMargin, int VfutilityDepth, int VhardBoundTimeRatio, int VsoftBoundTimeRatio, int VaspDepth, int VaspDelta, int VnullMoveR, int VlmrMoveCount, int ViirDepth, int Vtempo, int VpawnDelta, int VknightDelta, int VbishopDelta, int VrookDelta, int VqueenDelta, int VnodeLimit, int VlmrDepth, int VlmrBase, int VlmrMul, int VlmpDepth, int VlmpDMul, int Vscale)
     {
         hashSizeMB = VHashSizeMB;
         hashSize = Convert.ToInt32(hashSizeMB / ttSlotSizeMB);
@@ -439,11 +443,14 @@ public class MyBot : IChessBot
         deltas[5] = VqueenDelta;
         NullMoveR = VnullMoveR;
         lmrMoveCount = VlmrMoveCount;
-
-        nodeLimit = VnodeLimit;
         lmrDepth = VlmrDepth;
         lmrBase = ((float)VlmrBase) / 100;
         lmrMul = ((float)VlmrMul) / 100;
+        lmpDepth = VlmpDepth;
+        lmpDMul = VlmpDMul;
+        scale = Vscale;
+
+        nodeLimit = VnodeLimit;
 
     }
 
@@ -771,8 +778,8 @@ public class MyBot : IChessBot
             (int, int)[] quietsFromTo = new (int, int)[4096];
             Array.Fill(quietsFromTo, (-1, -1));
 
-            // Move reordering
-            // orderVariable(priority)
+            // Move Reordering
+            // Legend: orderVariable(priority)
             // TT(0),  MVV-LVA ordering(1),  Killer Moves(2)
 
             int[] orderKeys = new int[legals.Length];
@@ -809,10 +816,10 @@ public class MyBot : IChessBot
                 moveCount++;
                 move = legals[i];
 
-                // Budget late moves pruning
-                if (legals.Length > 15 && moveCount >= legals.Length - 2 && !move.IsCapture && nonPv) continue;
-
                 bool isQuiet = !move.IsCapture;
+
+                // Budget late moves pruning
+                if (isQuiet && nonPv && depth <= lmpDepth && moveCount > lmpDMul * depth) continue;
 
                 // Futility pruning
                 if (nonPv && depth <= futilityDepth && isQuiet && (eval + futilityMargin * depth < alpha) && bestScore > mateScore + 100) continue;

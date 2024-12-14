@@ -35,6 +35,9 @@ namespace Chess_Challenge.Cli
         private int _nodeLimit;
         private int _lmrBase;
         private int _lmrMul;
+        private int _lmpDepth;
+        private int _lmpDMul;
+        private int _scale;
 
         public Uci()
         {
@@ -68,6 +71,9 @@ namespace Chess_Challenge.Cli
             _lmrDepth = MyBot.lmrDepth;
             _lmrBase = (int)(MyBot.lmrBase * 100);
             _lmrMul = (int)(MyBot.lmrMul * 100);
+            _lmpDepth = MyBot.lmpDepth;
+            _lmpDMul = MyBot.lmpDMul;
+            _scale = MyBot.scale;
         }
 
         private void HandleUci()
@@ -106,7 +112,7 @@ namespace Chess_Challenge.Cli
                 Console.WriteLine($"option name Hash type spin default {_hashSizeMB} min 1 max 1024");
                 Console.WriteLine($"option name Threads type spin default 1 min 1 max 1");
                 Console.WriteLine($"option name nodeLimit type spin default {_nodeLimit} min 0 max 1000000");
-                /*
+                
                 Console.WriteLine($"option name rfpMargin type spin default {_rfpMargin} min 0 max 200");
                 Console.WriteLine($"option name rfpDepth type spin default {_rfpDepth} min 0 max 15");
                 Console.WriteLine($"option name futilityMargin type spin default {_futilityMargin} min 0 max 400");
@@ -127,7 +133,11 @@ namespace Chess_Challenge.Cli
                 Console.WriteLine($"option name lmrDepth type spin default {_lmrDepth} min 0 max 8");
                 Console.WriteLine($"option name lmrBase type spin default {_lmrBase} min 0 max 500");
                 Console.WriteLine($"option name lmrMul type spin default {_lmrMul} min 0 max 300");
-                */
+                Console.WriteLine($"option name lmpDepth type spin default {_lmpDepth} min 0 max 8");
+                Console.WriteLine($"option name lmpDMul type spin default {_lmpDMul} min 0 max 30");
+                Console.WriteLine($"option name scale type spin default {_scale} min 10 max 1000");
+
+
             }
 
             Console.WriteLine("uciok");
@@ -332,7 +342,34 @@ namespace Chess_Challenge.Cli
                 }
             }
 
-            MyBot.setMargins(_hashSizeMB, _rfpMargin, _rfpDepth, _futilityMargin, _futilityDepth, _hardBoundTimeRatio, _softBoundTimeRatio, _aspDepth, _aspDelta, _nullMoveR, _lmrMoveCount, _iirDepth, _tempo, _pawnDelta, _knightDelta, _bishopDelta, _rookDelta, _queenDelta, _nodeLimit, _lmrDepth, _lmrBase, _lmrMul);
+            else if (optionName == "name" && words[2] == "lmpDepth" && words[3] == "value")
+            {
+                if (int.TryParse(words[4], out var lmpd))
+                {
+                    _lmpDepth = lmpd;
+                    Console.WriteLine($"info string lmpDepth set to {_lmpDepth}");
+                }
+            }
+
+            else if (optionName == "name" && words[2] == "lmpDMul" && words[3] == "value")
+            {
+                if (int.TryParse(words[4], out var lmpdm))
+                {
+                    _lmpDMul = lmpdm;
+                    Console.WriteLine($"info string lmpDMul set to {_lmpDMul}");
+                }
+            }
+
+            else if (optionName == "name" && words[2] == "scale" && words[3] == "value")
+            {
+                if (int.TryParse(words[4], out var sc))
+                {
+                    _scale = sc;
+                    Console.WriteLine($"info string scale set to {_scale}");
+                }
+            }
+
+            MyBot.setMargins(_hashSizeMB, _rfpMargin, _rfpDepth, _futilityMargin, _futilityDepth, _hardBoundTimeRatio, _softBoundTimeRatio, _aspDepth, _aspDelta, _nullMoveR, _lmrMoveCount, _iirDepth, _tempo, _pawnDelta, _knightDelta, _bishopDelta, _rookDelta, _queenDelta, _nodeLimit, _lmrDepth, _lmrBase, _lmrMul, _lmpDepth, _lmpDMul, _scale);
 
         }
 
