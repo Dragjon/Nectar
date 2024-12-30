@@ -111,7 +111,7 @@ def SCReLU(x):
     return tf.square(tf.clip_by_value(x, 0, 1))
 ```
 ### Training
-* > V0.1.4~ish : Self-gen data
+* V0.1.4~ish and after : Self-gen data
 * <= V0.1.2 : The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
 | Version | SPRT Elo Gains | [CCRL Blitz](https://computerchess.org.uk/ccrl/404/) | Main Changes| Net |
