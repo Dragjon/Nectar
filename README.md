@@ -111,9 +111,7 @@ def SCReLU(x):
     return tf.square(tf.clip_by_value(x, 0, 1))
 ```
 ### Training
-* >= V0.2.2 : (hornet-net [80dcfa]) Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture using version V0.2.1
-* >= V0.1.7 : ??
-* >= V0.1.4 : (bee-net) Self-generated data with 5k soft nodes limit and filter when pos is check or bestmove is a capture using version V0.1.3
+* > V0.1.4~ish : Self-gen data
 * <= V0.1.2 : The data I used for my training is stash [data](https://drive.google.com/file/d/1LaaW7bNHBnyEdt51MP6SAZCbSdPzlk8d/view) parsed by cj5716
 ### Rating Changes
 | Version | SPRT Elo Gains | [CCRL Blitz](https://computerchess.org.uk/ccrl/404/) | Main Changes| Net |
