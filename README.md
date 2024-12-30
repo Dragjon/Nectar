@@ -11,7 +11,7 @@
 <br>
 
 [![License](https://img.shields.io/github/license/Dragjon/Nectar?style=for-the-badge)](https://opensource.org/license/mit)
-![Static Badge](https://img.shields.io/badge/Version-0.2.1-yellow?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Version-0.2.2-yellow?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dragjon/Nectar?style=for-the-badge)<br>
 [![Lichess rapid rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=rapid)](https://lichess.org/@/Tokenstealer/perf/rapid)
 [![Lichess blitz rating](https://lichess-shield.vercel.app/api?username=NectarBOT&format=blitz)](https://lichess.org/@/Tokenstealer/perf/blitz)
@@ -19,7 +19,7 @@
 </div>
 
 ## Overview
-My first successful attempt at using neural networks to create a relatively strong chess engine that can beat me!
+My first successful attempt at using neural networks to create a "strong" chess engine that can beat me!
 
 ## Playing
 ### Locally
@@ -116,6 +116,7 @@ def SCReLU(x):
 ### Rating Changes
 | Version | SPRT Elo Gains | [CCRL Blitz](https://computerchess.org.uk/ccrl/404/) | Main Changes| Net |
 |-|-|-|-|-|
+| 0.2.2 | 125.6 +/- 41.5 | - | Train new net from V2.1 selfgen data | 80dcfa
 | 0.2.1 | 6.3 +/- 5.0 | - | Weather factory tune LMP | ed1f4bc
 | 0.2.0 | 32.6 +/- 18.9 | - | Late move pruning | ed1f4bc
 | 0.1.9 | 13.1 +/- 10.3 | - | Added conditions for NMP | ed1f4bc
