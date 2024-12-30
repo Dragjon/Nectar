@@ -15,7 +15,7 @@
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("| Version    ");
                 Console.ResetColor();
-                Console.WriteLine("0.2.1                                  |");
+                Console.WriteLine("0.2.2                                  |");
                 Console.WriteLine("+---------------------------------------------------+");
             }
             var uci = new Uci();

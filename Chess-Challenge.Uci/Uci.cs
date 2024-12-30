@@ -112,7 +112,7 @@ namespace Chess_Challenge.Cli
                 Console.WriteLine($"option name Hash type spin default {_hashSizeMB} min 1 max 1024");
                 Console.WriteLine($"option name Threads type spin default 1 min 1 max 1");
                 Console.WriteLine($"option name nodeLimit type spin default {_nodeLimit} min 0 max 1000000");
-                /*
+
                 Console.WriteLine($"option name rfpMargin type spin default {_rfpMargin} min 0 max 200");
                 Console.WriteLine($"option name rfpDepth type spin default {_rfpDepth} min 0 max 15");
                 Console.WriteLine($"option name futilityMargin type spin default {_futilityMargin} min 0 max 400");
@@ -136,7 +136,6 @@ namespace Chess_Challenge.Cli
                 Console.WriteLine($"option name lmpDepth type spin default {_lmpDepth} min 0 max 8");
                 Console.WriteLine($"option name lmpDMul type spin default {_lmpDMul} min 0 max 30");
                 Console.WriteLine($"option name scale type spin default {_scale} min 10 max 1000");
-                */
 
 
             }
@@ -540,9 +539,6 @@ namespace Chess_Challenge.Cli
                     return;
                 case "setoption":
                     HandleSetOption(words);
-                    return;
-                case "seval":
-                    Console.WriteLine(MyBot.Evaluate(_board));
                     return;
                 case "perft":
                     HandlePerft(words);

@@ -18,10 +18,10 @@ public class MyBot : IChessBot
 
     public static int SetWeights()
     {
-        byte[] iweightsbytes = File.ReadAllBytes("./ed1f4bc_iweights.bin");
-        byte[] ibiasesbytes = File.ReadAllBytes("./ed1f4bc_ibiases.bin");
-        byte[] oweightsbytes = File.ReadAllBytes("./ed1f4bc_oweights.bin");
-        byte[] obiasesbytes = File.ReadAllBytes("./ed1f4bc_obias.bin");
+        byte[] iweightsbytes = File.ReadAllBytes("./80dcfa_iweights.bin");
+        byte[] ibiasesbytes = File.ReadAllBytes("./80dcfa_ibiases.bin");
+        byte[] oweightsbytes = File.ReadAllBytes("./80dcfa_oweights.bin");
+        byte[] obiasesbytes = File.ReadAllBytes("./80dcfa_obias.bin");
 
         int row = 0;
         int col = 0;
