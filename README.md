@@ -43,7 +43,7 @@ You can play the latest release of Nectar online at lichess [here](https://liche
 - QSearch delta pruning
 - Transposition table cutoffs
 - Mate Distancing pruning
-- Late movr pruning
+- Late move pruning
 ### Reductions/Extensions
 - Late moves reduction (Log formula)
 - Check extensions
